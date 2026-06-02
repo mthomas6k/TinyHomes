@@ -1202,9 +1202,215 @@ body.shaking {
   .plan-grid { grid-template-columns: repeat(2, 1fr); }
   .talk-grid { grid-template-columns: 1fr; gap: 50px; }
   .talk-form { grid-template-columns: 1fr; }
+  
+  .desktop-only { display: none !important; }
+  .nav-toggle { display: flex; }
+  .site-nav {
+    position: fixed;
+    top: -100%;
+    left: 0; right: 0;
+    background: rgba(251, 250, 246, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    flex-direction: column;
+    padding: 100px 24px 40px;
+    gap: 32px;
+    border-bottom: 1px solid var(--line);
+    transition: top 0.4s var(--ease);
+  }
+  .site-nav.open { top: 0; }
+  .nav-link { font-size: 22px; }
 }
 @media (max-width: 600px) {
   .plan-grid { grid-template-columns: 1fr; }
   .hero { padding-top: 110px; }
-  .footer-inner { flex-direction: column; gap: 14px; text-align: center; }
+  .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+  .footer-right { flex-direction: column; gap: 16px; }
 }
+
+/* =========================================================
+   ADDITIONAL UI (Nav, Admin, Extras)
+   ========================================================= */
+.desktop-only { display: block; }
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  width: 32px;
+  height: 24px;
+  z-index: 200;
+}
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--ink);
+  transition: all 0.3s var(--ease);
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+.site-nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  z-index: 150;
+}
+.nav-link {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.3s var(--ease);
+}
+.nav-link:hover { color: var(--cognac); }
+.site-header:not(.scrolled) .nav-link { color: var(--white); }
+.site-header:not(.scrolled) .nav-toggle span { background: var(--white); }
+.site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
+
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 48px;
+  height: 48px;
+  background: var(--cognac);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 0.4s var(--ease);
+  box-shadow: 0 4px 12px rgba(156, 106, 63, 0.3);
+}
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-to-top:hover { background: var(--cognac-d); transform: translateY(-4px); }
+.back-to-top svg { width: 24px; height: 24px; }
+
+.hp-field {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  z-index: -1;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.footer-socials { display: flex; gap: 16px; }
+.placeholder-social, .footer-link {
+  font-family: var(--body);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+.placeholder-social:hover, .footer-link:hover { opacity: 1; }
+
+.static-page-header {
+  height: 120px;
+  background: var(--white);
+}
+
+/* Admin Panel */
+.admin-panel {
+  position: fixed;
+  inset: 0 0 0 40%;
+  background: var(--ink);
+  color: var(--white);
+  z-index: 1000;
+  padding: 40px;
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease);
+  overflow-y: auto;
+  box-shadow: -20px 0 60px rgba(14,29,58,0.4);
+}
+@media (max-width: 960px) { .admin-panel { inset: 0; } }
+.admin-panel.open { transform: translateX(0); }
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 20px;
+}
+.admin-header h2 { font-family: var(--serif); font-size: 32px; font-weight: 300; }
+.admin-close { color: var(--white); font-size: 32px; line-height: 1; opacity: 0.5; }
+.admin-close:hover { opacity: 1; }
+.admin-controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.admin-select {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 12px;
+  font-family: var(--body);
+  font-size: 13px;
+  cursor: pointer;
+}
+.admin-select option { background: var(--ink); color: var(--white); }
+.submission-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+  margin-bottom: 16px;
+  position: relative;
+}
+.submission-card.unread::before {
+  content: '';
+  position: absolute;
+  top: 24px; left: 12px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+.sub-meta { font-size: 11px; opacity: 0.5; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.sub-name { font-family: var(--serif); font-size: 22px; margin-bottom: 4px; }
+.sub-contact { font-size: 13px; opacity: 0.8; margin-bottom: 16px; display: flex; gap: 12px; }
+.sub-msg { font-size: 14px; line-height: 1.6; margin-bottom: 20px; padding-left: 12px; border-left: 2px solid rgba(255,255,255,0.1); }
+.sub-actions { display: flex; gap: 16px; align-items: center; }
+.sub-status {
+  padding: 6px 12px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  font-weight: 600;
+}
+.sub-status[data-val="new"] { background: var(--cobalt); color: var(--white); }
+.sub-status[data-val="pending"] { background: var(--cognac); color: var(--white); }
+.sub-status[data-val="filled"] { background: var(--olive); color: var(--white); }
+.sub-status[data-val="passed"] { background: rgba(255,255,255,0.2); color: var(--white); }
+.sub-note {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.3);
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 13px;
+  padding: 4px;
+}
+.sub-note:focus { outline: none; border-bottom-style: solid; }

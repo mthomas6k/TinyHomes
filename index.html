@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tiny Homes — Concept v2</title>
+  <meta name="description" content="TinyHomes: Built by hand in Darien, Connecticut.">
+  <meta property="og:image" content="/placeholder-og.jpg">
+  <link rel="canonical" href="https://tinyhomesct.com/">
+  <link rel="icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
@@ -16,11 +20,25 @@
   <!-- ============ HEADER ============ -->
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
-      <a href="#home" class="brand-name">
+      <a href="/index.html" class="brand-name">
         <span class="brand-mark">TINYHOMES</span>
         <span class="brand-sub">darien &middot; ct</span>
       </a>
-      <a href="#contact" class="brand-logo">
+
+      <!-- Mobile menu toggle -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="site-nav" id="siteNav">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/plans.html" class="nav-link">Plans</a>
+        <a href="/gallery.html" class="nav-link">Gallery</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+      </nav>
+
+      <a href="/contact.html" class="brand-logo desktop-only">
         <div class="placeholder placeholder-logo">LOGO ~60×60 monogram</div>
       </a>
     </div>
@@ -33,16 +51,16 @@
          ============================================================ -->
     <section class="hero" id="home">
       <div class="hero-collage" id="heroCollage">
-        <div class="collage-slide active">
+        <div class="collage-slide active" data-src="/images/hero-1.jpg">
           <div class="placeholder placeholder-collage">IMAGE 1: tiny home in CT lawn, golden hour ~1920×1080</div>
         </div>
-        <div class="collage-slide">
+        <div class="collage-slide" data-src="/images/hero-2.jpg">
           <div class="placeholder placeholder-collage">IMAGE 2: interior with warm light, big window ~1920×1080</div>
         </div>
-        <div class="collage-slide">
+        <div class="collage-slide" data-src="/images/hero-3.jpg">
           <div class="placeholder placeholder-collage">IMAGE 3: tiny home next to pool, summer ~1920×1080</div>
         </div>
-        <div class="collage-slide">
+        <div class="collage-slide" data-src="/images/hero-4.jpg">
           <div class="placeholder placeholder-collage">IMAGE 4: detail — door, window, cedar shingle texture ~1920×1080</div>
         </div>
       </div>
@@ -248,37 +266,8 @@
         <h2 class="display-h2">Our floor plans.<br><em>A few starting points.</em></h2>
         <p class="lead">These are our stock offerings. Any one can be customized in finish, materials, and proportion to match your home and enhance your property.</p>
 
-        <div class="plan-grid">
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — small white shingle cottage with porch, hydrangeas. ~600×450</div></div>
-            <h3>The Darien</h3>
-            <p class="plan-spec">240 sqft &middot; studio &middot; half bath</p>
-          </article>
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — cedar shingle with gabled roof, larger footprint. ~600×450</div></div>
-            <h3>The Greenwich</h3>
-            <p class="plan-spec">360 sqft &middot; 1 bed &middot; full bath</p>
-          </article>
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — modern dark cladding with flat roof, sleek. ~600×450</div></div>
-            <h3>The Westport</h3>
-            <p class="plan-spec">420 sqft &middot; 1 bed &middot; full bath &middot; loft</p>
-          </article>
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — coastal white with navy trim, large windows. ~600×450</div></div>
-            <h3>The Rowayton</h3>
-            <p class="plan-spec">480 sqft &middot; 1 bed &middot; full bath &middot; kitchen</p>
-          </article>
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — barn-shape, board-and-batten siding, cognac door. ~600×450</div></div>
-            <h3>The Mianus</h3>
-            <p class="plan-spec">320 sqft &middot; studio &middot; full bath</p>
-          </article>
-          <article class="plan-card">
-            <div class="plan-render"><div class="placeholder placeholder-plan">IMAGE: Exterior render — gable with covered porch, weathered cedar shake. ~600×450</div></div>
-            <h3>The Compo</h3>
-            <p class="plan-spec">280 sqft &middot; studio &middot; half bath</p>
-          </article>
+        <div class="plan-grid" id="planGrid">
+          <!-- Populated by JS -->
         </div>
       </div>
     </section>
@@ -348,6 +337,8 @@
         </div>
 
         <form class="talk-form" id="contactForm" novalidate>
+          <input type="hidden" name="sourcePage" id="sourcePage" value="">
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
           <label>
             <span>Name</span>
             <input type="text" name="name" required>
@@ -378,12 +369,29 @@
     <!-- ============ FOOTER ============ -->
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p class="footer-brand">Maison <span>tiny homes</span></p>
-        <p class="footer-meta">Darien, Connecticut &middot; © 2026</p>
+        <div class="footer-left">
+          <p class="footer-brand">Maison <span>tiny homes</span></p>
+          <p class="footer-meta">Darien, Connecticut &middot; © 2026</p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-socials">
+            <a href="#" class="placeholder-social">IG</a>
+            <a href="#" class="placeholder-social">FB</a>
+          </div>
+          <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+        </div>
       </div>
     </footer>
 
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+
   </main>
+
+  <script src="js/data.js"></script>
 
   <script src="js/app.js"></script>
 </body>

@@ -9,12 +9,19 @@
 
   /* ---------- sticky header scroll state ---------- */
   const header = document.getElementById('siteHeader');
+  const backToTop = document.getElementById('backToTop');
   let ticking = false;
   function onScroll() {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        if (window.scrollY > 20) header.classList.add('scrolled');
-        else header.classList.remove('scrolled');
+        if (header) {
+          if (window.scrollY > 20) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+        }
+        if (backToTop) {
+          if (window.scrollY > 400) backToTop.classList.add('visible');
+          else backToTop.classList.remove('visible');
+        }
         ticking = false;
       });
       ticking = true;
@@ -23,11 +30,48 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  /* ---------- nav toggle ---------- */
+  const navToggle = document.getElementById('navToggle');
+  const siteNav = document.getElementById('siteNav');
+  if (navToggle && siteNav) {
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('open');
+      siteNav.classList.toggle('open');
+    });
+  }
+
+  if (backToTop) {
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  /* ---------- render plans ---------- */
+  if (typeof renderPlans === 'function') {
+    renderPlans('planGrid');
+  }
+
 
   /* ---------- hero collage: crossfade every 3s ---------- */
   const collage = document.getElementById('heroCollage');
   if (collage) {
     const slides = collage.querySelectorAll('.collage-slide');
+    
+    // Load images
+    slides.forEach(slide => {
+      const src = slide.getAttribute('data-src');
+      if (src) {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          slide.style.backgroundImage = `url(${src})`;
+          slide.style.backgroundSize = 'cover';
+          slide.style.backgroundPosition = 'center';
+          slide.innerHTML = '';
+        };
+      }
+    });
+
     let current = 0;
     setInterval(() => {
       slides[current].classList.remove('active');
@@ -91,15 +135,54 @@
   function isEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    const sourcePageField = document.getElementById('sourcePage');
+    if (sourcePageField) sourcePageField.value = window.location.pathname;
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
+      if (data.website) return; // honeypot
+
       if (!data.name || data.name.trim().length < 2) return setFeedback('Please enter your name.', 'error');
       if (!isEmail(data.email)) return setFeedback('Please enter a valid email.', 'error');
       if (!data.message || data.message.trim().length < 5) return setFeedback('Please add a brief message.', 'error');
-      // === REPLACE WITH REAL BACKEND POST WHEN DEPLOYED ===
-      setFeedback('Thanks — we will be in touch within a day.', 'success');
-      form.reset();
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            town: data.town,
+            message: data.message,
+            sourcePage: data.sourcePage || window.location.pathname
+          })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.redirect) {
+            window.location.href = result.redirect;
+          } else {
+            setFeedback('Thanks — we will be in touch within a day.', 'success');
+            form.reset();
+            submitBtn.textContent = 'Sent';
+          }
+        } else {
+          setFeedback('Something went wrong. Please try again later.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send';
+        }
+      } catch (err) {
+        setFeedback('Network error. Please try again later.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send';
+      }
     });
   }
 
@@ -397,6 +480,157 @@
 
 
   // resize handler reloads (simplest reliable approach)
-  window.addEventListener('resize', () => { location.reload(); });
+  // Disable reload on resize if the keyboard appears on mobile (height changes).
+  let initHeight = window.innerHeight;
+  let initWidth = window.innerWidth;
+  window.addEventListener('resize', () => { 
+    if (window.innerWidth !== initWidth) { // only reload on horizontal resize
+      location.reload(); 
+    }
+  });
+
+  /* =========================================================
+     ADMIN PANEL LISTENER
+     ========================================================= */
+  let adminBuffer = '';
+  document.addEventListener('keydown', async (e) => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+    if (document.activeElement.isContentEditable) return;
+    
+    if (e.key.length === 1) adminBuffer = (adminBuffer + e.key).slice(-50);
+    if (e.key === 'Backspace') adminBuffer = adminBuffer.slice(0, -1);
+    
+    const candidate = adminBuffer.slice(-10);
+    if (candidate.length === 10) {
+      try {
+        const r = await fetch('/api/dashboard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passkey: candidate })
+        });
+        if (r.ok) {
+          const data = await r.json();
+          openAdminPanel(data, candidate);
+          adminBuffer = '';
+        }
+      } catch (err) {}
+    }
+  });
+
+  function openAdminPanel(data, passkey) {
+    let panel = document.getElementById('adminPanel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'adminPanel';
+      panel.className = 'admin-panel';
+      document.body.appendChild(panel);
+    }
+    renderPanelContents(panel, data, passkey);
+    panel.getBoundingClientRect(); // reflow
+    panel.classList.add('open');
+
+    const onEsc = (e) => {
+      if (e.key === 'Escape') {
+        panel.classList.remove('open');
+        adminBuffer = '';
+        document.removeEventListener('keydown', onEsc);
+      }
+    };
+    document.addEventListener('keydown', onEsc);
+  }
+
+  function renderPanelContents(panel, data, passkey) {
+    const subs = data.submissions || [];
+    panel.innerHTML = `
+      <div class="admin-header">
+        <h2>Welcome back, ${data.ownerName}.</h2>
+        <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('open');">&times;</button>
+      </div>
+      <div class="admin-controls">
+        <select class="admin-select" id="adminSort">
+          <option value="desc">Newest First</option>
+          <option value="asc">Oldest First</option>
+        </select>
+        <select class="admin-select" id="adminFilter">
+          <option value="all">All</option>
+          <option value="new">New</option>
+          <option value="pending">Pending</option>
+          <option value="filled">Filled</option>
+          <option value="passed">Passed</option>
+        </select>
+      </div>
+      <div id="adminSubs"></div>
+    `;
+
+    const container = panel.querySelector('#adminSubs');
+    
+    function renderList(list) {
+      container.innerHTML = list.map(sub => `
+        <div class="submission-card ${!sub.opened ? 'unread' : ''}">
+          <div class="sub-meta">${new Date(sub.submittedAt).toLocaleString([], {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'})} &middot; from ${sub.sourcePage}</div>
+          <div class="sub-name">${sub.name}</div>
+          <div class="sub-contact">
+            <a href="mailto:${sub.email}">${sub.email}</a>
+            ${sub.phone ? `<a href="tel:${sub.phone}">${sub.phone}</a>` : ''}
+            <span>${sub.town || ''}</span>
+          </div>
+          <div class="sub-msg">${sub.message}</div>
+          <div class="sub-actions">
+            <select class="sub-status admin-select" data-id="${sub.id}" data-val="${sub.status || 'new'}">
+              <option value="new" ${sub.status === 'new' ? 'selected' : ''}>NEW</option>
+              <option value="pending" ${sub.status === 'pending' ? 'selected' : ''}>PENDING</option>
+              <option value="filled" ${sub.status === 'filled' ? 'selected' : ''}>FILLED</option>
+              <option value="passed" ${sub.status === 'passed' ? 'selected' : ''}>PASSED</option>
+            </select>
+            <input type="text" class="sub-note" placeholder="Add a note..." data-id="${sub.id}" value="${sub.note || ''}">
+            <label style="font-size: 11px; display:flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" class="sub-opened" data-id="${sub.id}" ${sub.opened ? 'checked' : ''}> Opened
+            </label>
+          </div>
+        </div>
+      `).join('');
+      
+      container.querySelectorAll('.sub-status, .sub-note, .sub-opened').forEach(el => {
+        el.addEventListener('change', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (e.target.classList.contains('sub-status')) {
+            e.target.setAttribute('data-val', e.target.value);
+          }
+          const patch = {};
+          if (e.target.classList.contains('sub-status')) patch.status = e.target.value;
+          if (e.target.classList.contains('sub-note')) patch.note = e.target.value;
+          if (e.target.classList.contains('sub-opened')) {
+            patch.opened = e.target.checked;
+            const card = e.target.closest('.submission-card');
+            if (patch.opened) card.classList.remove('unread');
+            else card.classList.add('unread');
+          }
+          
+          await fetch('/api/update', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ passkey, submissionId: id, patch })
+          });
+        });
+      });
+    }
+    
+    function applyFilters() {
+      const sort = panel.querySelector('#adminSort').value;
+      const filter = panel.querySelector('#adminFilter').value;
+      let filtered = subs;
+      if (filter !== 'all') {
+        filtered = subs.filter(s => (s.status || 'new') === filter);
+      }
+      if (sort === 'asc') {
+        filtered = [...filtered].reverse();
+      }
+      renderList(filtered);
+    }
+    
+    panel.querySelector('#adminSort').addEventListener('change', applyFilters);
+    panel.querySelector('#adminFilter').addEventListener('change', applyFilters);
+    applyFilters();
+  }
 
 })();

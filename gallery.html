@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | TinyHomes CT</title>
+  <meta name="description" content="View completed tiny home builds by TinyHomes CT.">
+  <meta property="og:image" content="/placeholder-og.jpg">
+  <link rel="canonical" href="https://tinyhomesct.com/gallery.html">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .gallery-item {
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+    .gallery-item .placeholder {
+      width: 100%; height: 100%; border: none;
+      background: rgba(14,29,58,0.04);
+      transition: transform 0.4s var(--ease);
+    }
+    .gallery-item:hover .placeholder {
+      transform: scale(1.03);
+    }
+    
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(14,29,58,0.95);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      padding: 40px;
+    }
+    .lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      font-size: 40px;
+      color: var(--white);
+      background: none; border: none; cursor: pointer;
+      line-height: 1; opacity: 0.7;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-content {
+      max-width: 1200px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header class="site-header scrolled" id="siteHeader">
+    <div class="header-inner">
+      <a href="/index.html" class="brand-name">
+        <span class="brand-mark">TINYHOMES</span>
+        <span class="brand-sub">darien &middot; ct</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/plans.html" class="nav-link">Plans</a>
+        <a href="/gallery.html" class="nav-link">Gallery</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+      </nav>
+      <a href="/contact.html" class="brand-logo desktop-only">
+        <div class="placeholder placeholder-logo">LOGO ~60×60 monogram</div>
+      </a>
+    </div>
+  </header>
+
+  <main style="padding-top: 100px;">
+    <section class="section" style="background: var(--paper); min-height: 80vh;">
+      <div class="container">
+        <p class="eyebrow">completed builds</p>
+        <h1 class="display-h2">The gallery.</h1>
+        
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- 6 placeholders -->
+          <div class="gallery-item" onclick="openLightbox('IMAGE 1: Exterior daylight')">
+            <div class="placeholder">IMAGE 1</div>
+          </div>
+          <div class="gallery-item" onclick="openLightbox('IMAGE 2: Interior kitchen detail')">
+            <div class="placeholder">IMAGE 2</div>
+          </div>
+          <div class="gallery-item" onclick="openLightbox('IMAGE 3: Bathroom finishes')">
+            <div class="placeholder">IMAGE 3</div>
+          </div>
+          <div class="gallery-item" onclick="openLightbox('IMAGE 4: Golden hour exterior')">
+            <div class="placeholder">IMAGE 4</div>
+          </div>
+          <div class="gallery-item" onclick="openLightbox('IMAGE 5: Loft bed area')">
+            <div class="placeholder">IMAGE 5</div>
+          </div>
+          <div class="gallery-item" onclick="openLightbox('IMAGE 6: Winter setting')">
+            <div class="placeholder">IMAGE 6</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <p class="footer-brand">Maison <span>tiny homes</span></p>
+          <p class="footer-meta">Darien, Connecticut &middot; © 2026</p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-socials">
+            <a href="#" class="placeholder-social">IG</a>
+            <a href="#" class="placeholder-social">FB</a>
+          </div>
+          <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+  </main>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close">&times;</button>
+    <div class="lightbox-content placeholder" id="lightboxContent"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    function openLightbox(caption) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxContent').innerText = caption;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox({target: {id: 'lightbox'}});
+    });
+  </script>
+</body>
+</html>
