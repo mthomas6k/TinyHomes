@@ -1,0 +1,402 @@
+/* =========================================================
+   MAISON — app.js
+   Scaffold-level interactions only.
+   Set piece animations (paint, scribble, saw, handwriting)
+   are added in follow-up passes.
+   ========================================================= */
+
+(function () {
+
+  /* ---------- sticky header scroll state ---------- */
+  const header = document.getElementById('siteHeader');
+  let ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        if (window.scrollY > 20) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+
+  /* ---------- hero collage: crossfade every 3s ---------- */
+  const collage = document.getElementById('heroCollage');
+  if (collage) {
+    const slides = collage.querySelectorAll('.collage-slide');
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 3000);
+  }
+
+
+  /* ---------- before/after slider ---------- */
+  const slider = document.getElementById('baSlider');
+  const baWith = document.getElementById('baWith');
+  const baHandle = document.getElementById('baHandle');
+  let dragging = false;
+
+  function setSlider(clientX) {
+    if (!slider) return;
+    const rect = slider.getBoundingClientRect();
+    let pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+    baWith.style.clipPath = 'inset(0 0 0 ' + (pct * 100) + '%)';
+    baHandle.style.left = (pct * 100) + '%';
+    // The "after" caption lives INSIDE .ba-with so it's automatically
+    // clipped by the top layer's clip-path — no extra work needed.
+    // The "before" caption lives on the bottom layer (always rendered),
+    // so we need to hide it manually when the top layer (after-image) is
+    // covering it. The top layer is visible from x=pct*width to x=width.
+    // The before caption sits at right: 18px. Compute its left edge as a
+    // fraction of the slider width and check if the slider has crossed it.
+    const capBefore = slider.querySelector('.ba-cap-before');
+    if (capBefore) {
+      const capRect = capBefore.getBoundingClientRect();
+      // caption's left edge in slider-pct
+      const capLeftPct = (capRect.left - rect.left) / rect.width;
+      // visible only if slider position has crossed past the caption's left
+      // edge (i.e. the top layer no longer covers the caption's left edge)
+      capBefore.style.opacity = (pct >= capLeftPct) ? '1' : '0';
+    }
+  }
+
+  if (slider) {
+    slider.addEventListener('mousedown', (e) => { dragging = true; setSlider(e.clientX); });
+    window.addEventListener('mousemove', (e) => { if (dragging) setSlider(e.clientX); });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    slider.addEventListener('touchstart', (e) => { setSlider(e.touches[0].clientX); }, { passive: true });
+    slider.addEventListener('touchmove', (e) => { setSlider(e.touches[0].clientX); }, { passive: true });
+    // init at 50% so caption opacities match starting clip-path
+    const r = slider.getBoundingClientRect();
+    setSlider(r.left + r.width / 2);
+  }
+
+
+  /* ---------- contact form (stub validation) ---------- */
+  const form = document.getElementById('contactForm');
+  const feedback = document.getElementById('formFeedback');
+
+  function setFeedback(msg, type) {
+    if (!feedback) return;
+    feedback.textContent = msg;
+    feedback.className = 'form-feedback ' + (type || '');
+  }
+  function isEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (!data.name || data.name.trim().length < 2) return setFeedback('Please enter your name.', 'error');
+      if (!isEmail(data.email)) return setFeedback('Please enter a valid email.', 'error');
+      if (!data.message || data.message.trim().length < 5) return setFeedback('Please add a brief message.', 'error');
+      // === REPLACE WITH REAL BACKEND POST WHEN DEPLOYED ===
+      setFeedback('Thanks — we will be in touch within a day.', 'success');
+      form.reset();
+    });
+  }
+
+
+  /* =========================================================
+     PAINT REVEAL — reusable x-ray scratch-off mechanic.
+     Used for "Who are we?" (cover beige → reveals navy world)
+     and "Who we are NOT" (cover cobalt → reveals pink world).
+     ========================================================= */
+  function setupPaintReveal(section, coverSvg, opts) {
+    if (!section || !coverSvg) return;
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const ANG = -16;
+    const bandH = H * 0.36;
+    const COUNT = 7;
+    const L = W * 2.2;
+    const NS = 'http://www.w3.org/2000/svg';
+    const MASK_ID = 'paint-mask-' + Math.random().toString(36).slice(2, 8);
+    let latched = false;
+
+    coverSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    coverSvg.innerHTML = '';
+
+    const defs = document.createElementNS(NS, 'defs');
+    const mask = document.createElementNS(NS, 'mask');
+    mask.setAttribute('id', MASK_ID);
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', 0); mask.setAttribute('y', 0);
+    mask.setAttribute('width', W); mask.setAttribute('height', H);
+
+    const maskBg = document.createElementNS(NS, 'rect');
+    maskBg.setAttribute('x', 0); maskBg.setAttribute('y', 0);
+    maskBg.setAttribute('width', W); maskBg.setAttribute('height', H);
+    maskBg.setAttribute('fill', 'white');
+    mask.appendChild(maskBg);
+
+    const maskGroup = document.createElementNS(NS, 'g');
+    maskGroup.setAttribute('transform', 'rotate(' + ANG + ' ' + (W / 2) + ' ' + (H / 2) + ')');
+    const maskStrokes = [];
+    for (let i = 0; i < COUNT; i++) {
+      const cy = -H * 0.1 + ((H * 1.2) / (COUNT - 1)) * i;
+      const ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('x1', -W * 0.5);
+      ln.setAttribute('y1', cy);
+      ln.setAttribute('x2', W * 1.5);
+      ln.setAttribute('y2', cy);
+      ln.setAttribute('stroke', 'black');
+      ln.setAttribute('stroke-width', bandH);
+      ln.setAttribute('stroke-linecap', 'round');
+      ln.setAttribute('stroke-dasharray', L);
+      ln.setAttribute('stroke-dashoffset', L);
+      maskGroup.appendChild(ln);
+      maskStrokes.push(ln);
+    }
+    mask.appendChild(maskGroup);
+
+    const maskSeal = document.createElementNS(NS, 'rect');
+    maskSeal.setAttribute('x', 0);
+    maskSeal.setAttribute('y', H);
+    maskSeal.setAttribute('width', W);
+    maskSeal.setAttribute('height', 0);
+    maskSeal.setAttribute('fill', 'black');
+    mask.appendChild(maskSeal);
+
+    defs.appendChild(mask);
+    coverSvg.appendChild(defs);
+
+    // the cover rect — color set by opts.coverColor
+    const cover = document.createElementNS(NS, 'rect');
+    cover.setAttribute('x', 0); cover.setAttribute('y', 0);
+    cover.setAttribute('width', W); cover.setAttribute('height', H);
+    cover.setAttribute('fill', opts.coverColor);
+    cover.setAttribute('mask', 'url(#' + MASK_ID + ')');
+    coverSvg.appendChild(cover);
+
+    // foreignObject headline with "before" colors, masked the same way
+    if (opts.headlineHtml) {
+      const fo = document.createElementNS(NS, 'foreignObject');
+      fo.setAttribute('x', 0); fo.setAttribute('y', 0);
+      fo.setAttribute('width', W); fo.setAttribute('height', H);
+      fo.setAttribute('mask', 'url(#' + MASK_ID + ')');
+      fo.innerHTML = opts.headlineHtml;
+      coverSvg.appendChild(fo);
+    }
+
+    function update() {
+      const rect = section.getBoundingClientRect();
+      const total = section.offsetHeight - window.innerHeight;
+      // start the paint earlier — by a header's worth of headroom — so the
+      // headline isn't tucked under the sticky header when the animation begins
+      const HEAD_OFFSET = 120;
+      let p = Math.min(Math.max((-rect.top + HEAD_OFFSET) / total, 0), 1);
+      if (latched) p = 1;
+
+      const bandsPortion = 0.85;
+      let covered = 0;
+      maskStrokes.forEach((ln, i) => {
+        const start = (i / COUNT) * bandsPortion;
+        const end = ((i + 1) / COUNT) * bandsPortion;
+        let loc = Math.min(Math.max((p - start) / (end - start), 0), 1);
+        ln.setAttribute('stroke-dashoffset', L * (1 - loc));
+        if (loc > 0.5) covered++;
+      });
+
+      const sealP = Math.min(Math.max((p - bandsPortion) / (1 - bandsPortion), 0), 1);
+      maskSeal.setAttribute('y', H - H * sealP);
+      maskSeal.setAttribute('height', H * sealP);
+
+      if (covered >= COUNT - 1 || sealP > 0.3) section.classList.add('painted');
+      else section.classList.remove('painted');
+
+      if (p >= 0.97) {
+        latched = true;
+        section.classList.add('latched');
+      }
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => { update(); ticking = false; });
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+  }
+
+  // shared "before" headline HTML template
+  const headlineHtml1 = '<div xmlns="http://www.w3.org/1999/xhtml" class="who-headline-fo">' +
+    '<div class="container-inner">' +
+    '<p class="eyebrow">about us</p>' +
+    '<h2 class="display-h2">Who are we<em>?</em></h2>' +
+    '</div></div>';
+
+  const headlineHtml2 = '<div xmlns="http://www.w3.org/1999/xhtml" class="who-headline-fo who-headline-fo-light">' +
+    '<div class="container-inner">' +
+    '<p class="eyebrow">to be clear</p>' +
+    '<h2 class="display-h2">Who we are <em>NOT.</em></h2>' +
+    '</div></div>';
+
+  setupPaintReveal(
+    document.querySelector('.section-who'),
+    document.getElementById('coverSheet'),
+    { coverColor: '#f6f1e7', headlineHtml: headlineHtml1 }
+  );
+
+  setupPaintReveal(
+    document.querySelector('.section-who-not'),
+    document.getElementById('coverSheet2'),
+    { coverColor: '#1d3a6b', headlineHtml: headlineHtml2 }
+  );
+
+
+  /* =========================================================
+     SET PIECE #3 — SCRIBBLE OUT + HANDWRITTEN CORRECTION
+     One-shot. IntersectionObserver triggers when the heading
+     enters viewport.
+       1. Scribble crosses out "we provide." with curvy looping
+          marker strokes (not sharp zigzags).
+       2. After scribble finishes, "makes us different." writes
+          itself in above the scribbled portion.
+     ========================================================= */
+  const scribbleSvg = document.getElementById('scribbleSvg');
+  const scribbleTarget = document.getElementById('scribbleTarget');
+  const markerLabel = document.getElementById('markerLabel');
+  const strikeHeading = document.getElementById('strikeHeading');
+  let scribbleFired = false;
+
+  function fireScribble() {
+    if (scribbleFired || !scribbleSvg || !scribbleTarget) return;
+    scribbleFired = true;
+
+    // measure the scribble target
+    const r = scribbleTarget.getBoundingClientRect();
+    const W = r.width + 60;
+    const H = r.height + 40;
+    scribbleSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+    // SCRIBBLE PATH — matches reference: tight diagonal slashes with
+    // hairpin turns at the top and bottom edges. Each "stroke" is a
+    // near-diagonal line; consecutive strokes connect through small
+    // U-turn arcs. Densely packed across the text.
+    const SLASHES = 18;             // number of diagonal strokes
+    const padX = 18;
+    const startX = padX;
+    const endX = W - padX;
+    const topY = H * 0.15;
+    const botY = H * 0.85;
+    const slashWidth = (endX - startX) / SLASHES;
+    // each diagonal slash leans right by ~half a slash-width per height
+    const lean = slashWidth * 0.7;  // how far the bottom of each slash
+                                     // is to the right of its top
+
+    let d = '';
+    // start at top-left
+    let curX = startX;
+    let curY = topY;
+    d += 'M ' + curX + ' ' + curY;
+
+    for (let i = 0; i < SLASHES; i++) {
+      const goingDown = i % 2 === 0;
+      // each stroke advances rightward
+      const nextX = curX + (goingDown ? lean : (slashWidth * 2 - lean));
+      const nextY = goingDown ? botY : topY;
+
+      // slight randomness in stroke target
+      const jitterY = (Math.random() - 0.5) * 8;
+      const jitterX = (Math.random() - 0.5) * 4;
+      const tx = nextX + jitterX;
+      const ty = nextY + jitterY;
+
+      // hairpin curve: control points pull slightly past the endpoint
+      // to create the small U-turn at top/bottom
+      const overshoot = 6;
+      const cx1 = curX + (tx - curX) * 0.35;
+      const cy1 = curY + (ty - curY) * 0.55;
+      const cx2 = tx - (tx - curX) * 0.1;
+      const cy2 = ty + (goingDown ? overshoot : -overshoot);
+
+      d += ' C ' + cx1 + ' ' + cy1 + ', ' + cx2 + ' ' + cy2 + ', ' + tx + ' ' + ty;
+
+      curX = tx;
+      curY = ty;
+    }
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', '#1d3a6b');
+    path.setAttribute('stroke-width', '14');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('fill', 'none');
+    scribbleSvg.innerHTML = '';
+    scribbleSvg.appendChild(path);
+
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.getBoundingClientRect();   // force reflow
+
+    // pre-delay so reader can read "What we provide." before scribble fires
+    setTimeout(() => {
+      path.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
+      path.style.strokeDashoffset = '0';
+    }, 1500);
+
+    // AFTER scribble completes, write the marker label (1500 pre-delay + 1400 scribble)
+    setTimeout(() => {
+      if (markerLabel) markerLabel.classList.add('written');
+    }, 2900);
+  }
+
+  if (strikeHeading) {
+    const scribObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !scribbleFired) {
+          fireScribble();
+          scribObs.disconnect();
+        }
+      });
+    }, { rootMargin: '0px 0px -25% 0px' });
+    scribObs.observe(strikeHeading);
+  }
+
+
+  /* =========================================================
+     NAILED-TITLE animation — staggered across the 3 value cols.
+     Underline draws left-to-right, then nail drops in at the
+     right end and shakes briefly like it's just been hammered.
+     One-shot, IntersectionObserver triggered.
+     ========================================================= */
+  const valueRow = document.querySelector('.value-row');
+  if (valueRow) {
+    let nailsFired = false;
+    const nailObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !nailsFired) {
+          nailsFired = true;
+          const titles = valueRow.querySelectorAll('.nailed-title');
+          titles.forEach((t, i) => {
+            // all fire roughly together with tiny offset (~80ms between) so it
+            // still feels like 3 hits not one mega-thud, but the reader gets to
+            // see all 3 even if they scroll quickly past
+            setTimeout(() => t.classList.add('nailed'), 900 + i * 90);
+          });
+          nailObs.disconnect();
+        }
+      });
+    }, { rootMargin: '0px 0px -20% 0px' });
+    nailObs.observe(valueRow);
+  }
+
+
+  // resize handler reloads (simplest reliable approach)
+  window.addEventListener('resize', () => { location.reload(); });
+
+})();
