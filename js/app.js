@@ -499,9 +499,8 @@
     
     if (e.key.length === 1) adminBuffer = (adminBuffer + e.key).slice(-50);
     if (e.key === 'Backspace') adminBuffer = adminBuffer.slice(0, -1);
-    
-    const candidate = adminBuffer.slice(-10);
-    if (candidate.length === 10) {
+    const candidate = adminBuffer.slice(-15);
+    if (candidate.length === 15) {
       try {
         const r = await fetch('/api/dashboard', {
           method: 'POST',
