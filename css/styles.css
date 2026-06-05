@@ -40,6 +40,7 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html, body { overscroll-behavior-y: none; }
 body {
   font-family: var(--body);
   font-weight: 400;
@@ -113,15 +114,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 22px 0;
-  transition: background 0.4s var(--ease), backdrop-filter 0.4s var(--ease), padding 0.3s var(--ease);
-}
-.site-header.scrolled {
+  padding: 14px 0;
   background: rgba(251, 250, 246, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 14px 0;
   border-bottom: 1px solid var(--line-soft);
+  transition: background 0.4s var(--ease), backdrop-filter 0.4s var(--ease), padding 0.3s var(--ease);
+}
+body.is-home .site-header:not(.scrolled) {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+  padding: 22px 0;
+}
+.site-header.scrolled {
+  /* No overrides needed if default is already scrolled state */
 }
 .header-inner {
   max-width: var(--max-w);
@@ -141,7 +149,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-weight: 400;
   font-size: 22px;
   letter-spacing: 0.02em;
-  color: var(--white);
+  color: var(--ink);
   transition: color 0.4s var(--ease);
 }
 .brand-sub {
@@ -149,12 +157,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 10px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--blush);
+  color: var(--cognac);
   margin-top: 4px;
   transition: color 0.4s var(--ease);
 }
-.site-header.scrolled .brand-mark { color: var(--ink); }
-.site-header.scrolled .brand-sub { color: var(--cognac); }
+body.is-home .site-header:not(.scrolled) .brand-mark { color: var(--white); }
+body.is-home .site-header:not(.scrolled) .brand-sub { color: var(--blush); }
 .brand-logo {
   display: block;
   width: 60px; height: 60px;
@@ -1267,9 +1275,9 @@ body.shaking {
   transition: color 0.3s var(--ease);
 }
 .nav-link:hover { color: var(--cognac); }
-.site-header:not(.scrolled) .nav-link { color: var(--white); }
-.site-header:not(.scrolled) .nav-toggle span { background: var(--white); }
-.site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
+body.is-home .site-header:not(.scrolled) .nav-link { color: var(--white); }
+body.is-home .site-header:not(.scrolled) .nav-toggle span { background: var(--white); }
+body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 
 .back-to-top {
   position: fixed;

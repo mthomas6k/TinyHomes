@@ -295,9 +295,15 @@
       if (covered >= COUNT - 1 || sealP > 0.3) section.classList.add('painted');
       else section.classList.remove('painted');
 
-      if (p >= 0.97) {
+      if (p >= 0.97 && !latched) {
         latched = true;
         section.classList.add('latched');
+        
+        // collapse section height + compensate scroll
+        const oldH = section.offsetHeight;
+        section.style.height = '100vh';
+        const delta = oldH - section.offsetHeight;
+        window.scrollBy(0, -delta);
       }
     }
 
@@ -466,10 +472,8 @@
           nailsFired = true;
           const titles = valueRow.querySelectorAll('.nailed-title');
           titles.forEach((t, i) => {
-            // all fire roughly together with tiny offset (~80ms between) so it
-            // still feels like 3 hits not one mega-thud, but the reader gets to
-            // see all 3 even if they scroll quickly past
-            setTimeout(() => t.classList.add('nailed'), 900 + i * 90);
+            // Sequential rhythm: 350ms between strikes
+            setTimeout(() => t.classList.add('nailed'), 900 + i * 350);
           });
           nailObs.disconnect();
         }
