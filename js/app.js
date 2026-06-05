@@ -269,47 +269,37 @@
       coverSvg.appendChild(fo);
     }
 
-    function update() {
-      const rect = section.getBoundingClientRect();
-      const total = section.offsetHeight - window.innerHeight;
-      // start the paint earlier — by a header's worth of headroom — so the
-      // headline isn't tucked under the sticky header when the animation begins
-      const HEAD_OFFSET = 120;
-      let p = Math.min(Math.max((-rect.top + HEAD_OFFSET) / total, 0), 1);
-      if (latched) p = 1;
+    let fired = false;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !fired) {
+          fired = true;
+          
+          maskStrokes.forEach((ln, i) => {
+            ln.getBoundingClientRect(); // force reflow
+            setTimeout(() => {
+              ln.style.transition = 'stroke-dashoffset 0.4s linear';
+              ln.style.strokeDashoffset = '0';
+              if (i >= COUNT - 2) section.classList.add('painted');
+            }, i * 150);
+          });
 
-      const bandsPortion = 0.85;
-      let covered = 0;
-      maskStrokes.forEach((ln, i) => {
-        const start = (i / COUNT) * bandsPortion;
-        const end = ((i + 1) / COUNT) * bandsPortion;
-        let loc = Math.min(Math.max((p - start) / (end - start), 0), 1);
-        ln.setAttribute('stroke-dashoffset', L * (1 - loc));
-        if (loc > 0.5) covered++;
+          setTimeout(() => {
+            maskSeal.style.transition = 'y 0.4s linear, height 0.4s linear';
+            maskSeal.style.y = '0px';
+            maskSeal.style.height = H + 'px';
+            // Also update attributes as fallback
+            maskSeal.setAttribute('y', 0);
+            maskSeal.setAttribute('height', H);
+            
+            section.classList.add('latched');
+          }, COUNT * 150);
+
+          obs.disconnect();
+        }
       });
-
-      const sealP = Math.min(Math.max((p - bandsPortion) / (1 - bandsPortion), 0), 1);
-      maskSeal.setAttribute('y', H - H * sealP);
-      maskSeal.setAttribute('height', H * sealP);
-
-      if (covered >= COUNT - 1 || sealP > 0.3) section.classList.add('painted');
-      else section.classList.remove('painted');
-
-      if (p >= 0.97 && !latched) {
-        latched = true;
-        section.classList.add('latched');
-      }
-    }
-
-    let ticking = false;
-    function onScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(() => { update(); ticking = false; });
-        ticking = true;
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    update();
+    }, { rootMargin: '0px 0px -25% 0px' });
+    obs.observe(section);
   }
 
   // shared "before" headline HTML template
