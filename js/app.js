@@ -202,7 +202,6 @@
     const L = W * 2.2;
     const NS = 'http://www.w3.org/2000/svg';
     const MASK_ID = 'paint-mask-' + Math.random().toString(36).slice(2, 8);
-    let latched = false;
 
     coverSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     coverSvg.innerHTML = '';
