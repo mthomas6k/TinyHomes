@@ -298,12 +298,6 @@
       if (p >= 0.97 && !latched) {
         latched = true;
         section.classList.add('latched');
-        
-        // collapse section height + compensate scroll
-        const oldH = section.offsetHeight;
-        section.style.height = '100vh';
-        const delta = oldH - section.offsetHeight;
-        window.scrollBy(0, -delta);
       }
     }
 

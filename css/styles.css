@@ -558,6 +558,11 @@ body.is-home .site-header:not(.scrolled) .brand-sub { color: var(--blush); }
   overflow: hidden;
 }
 
+.section-who.latched .sticky-stage,
+.section-who-not.latched .sticky-stage {
+  position: relative;
+}
+
 /* BOTTOM LAYER — pink finished state */
 .finished-state-pink {
   background: var(--pink);
