@@ -67,18 +67,24 @@
    * randomized, but it always begins on the floor plan of that model.
    */
   const SLIDE_DATA = [
-    // === THE GREENWICH (pages 1–5, page 6 coming next batch) ===
+    // === THE GREENWICH (pages 1–6) ===
     { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black' },
     { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'black' },
     { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'black' },
     { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
     { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'black' },
-    // === MORE MODELS WILL BE APPENDED HERE ===
+    { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'black' },
+    
+    // === THE WESTPORT (pages 7-10) ===
+    { src: '/images/slider/slide-07.jpg', model: 'The Westport', nav: 'black' },
+    { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'black' },
+    { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'black' },
+    { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'black' },
   ];
 
   const MODEL_GROUPS = [
-    { name: 'The Greenwich', start: 0, end: 4 },  // indices 0–4 (will extend to 5 when page 6 arrives)
-    // { name: 'The Westport', start: 6, end: 9 },
+    { name: 'The Greenwich', start: 0, end: 5 },
+    { name: 'The Westport', start: 6, end: 9 },
     // { name: 'The Darien', start: 10, end: 13 },
     // { name: 'The Ocean Breeze', start: 14, end: 16 },
     // { name: 'The Rowayton 2', start: 17, end: 22 },
