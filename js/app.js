@@ -80,12 +80,18 @@
     { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'black' },
     { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'black' },
     { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'black' },
+
+    // === THE DARIEN (pages 11-14) ===
+    { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black' },
+    { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'black' },
+    { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'black' },
+    { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'black' },
   ];
 
   const MODEL_GROUPS = [
     { name: 'The Greenwich', start: 0, end: 5 },
     { name: 'The Westport', start: 6, end: 9 },
-    // { name: 'The Darien', start: 10, end: 13 },
+    { name: 'The Darien', start: 10, end: 13 },
     // { name: 'The Ocean Breeze', start: 14, end: 16 },
     // { name: 'The Rowayton 2', start: 17, end: 22 },
     // { name: 'The Rowayton 3', start: 23, end: 28 },
