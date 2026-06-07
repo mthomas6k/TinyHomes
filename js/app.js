@@ -163,6 +163,20 @@
     }
     let activeHeaderNum = 1;
 
+    // --- Scroll Cue Wipe Setup ---
+    const cue1 = document.getElementById('scrollCue1');
+    let cue2 = null;
+    if (cue1) {
+      cue2 = cue1.cloneNode(true);
+      cue2.id = 'scrollCue2';
+      cue1.parentNode.insertBefore(cue2, cue1.nextSibling);
+      
+      cue1.style.zIndex = '1';
+      cue2.style.zIndex = '2';
+      cue2.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+    }
+    let activeCueNum = 1;
+
     // --- Create slide DOM elements ---
     SLIDE_DATA.forEach((slide, i) => {
       const div = document.createElement('div');
@@ -246,6 +260,34 @@
         }
         
         activeHeaderNum = activeHeaderNum === 1 ? 2 : 1;
+      }
+
+      // --- Scroll Cue Sync Wipe ---
+      if (cue1 && cue2) {
+        const currentCue = activeCueNum === 1 ? cue1 : cue2;
+        const nextCue = activeCueNum === 1 ? cue2 : cue1;
+
+        if (slide.nav === 'black') {
+          nextCue.classList.add('nav-dark');
+        } else {
+          nextCue.classList.remove('nav-dark');
+        }
+
+        if (!isFirstLoad && prevIndex !== -1) {
+          nextCue.style.zIndex = '2';
+          currentCue.style.zIndex = '1';
+          
+          nextCue.style.animation = 'none';
+          void nextCue.offsetWidth; // trigger reflow
+          nextCue.style.animation = 'wipe-in 1.4s cubic-bezier(0.77, 0, 0.175, 1) forwards';
+        } else {
+          nextCue.style.zIndex = '2';
+          currentCue.style.zIndex = '1';
+          nextCue.style.animation = 'none';
+          nextCue.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+        }
+        
+        activeCueNum = activeCueNum === 1 ? 2 : 1;
       }
     }
 
