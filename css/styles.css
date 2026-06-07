@@ -148,7 +148,7 @@ body.is-home .site-header:not(.scrolled) {
   height: 55px;
   width: auto;
   display: block;
-  transform: translateY(-8px) scale(2);
+  transform: translateY(-10px) scale(2);
   transform-origin: left top;
 }
 .brand-mark {
@@ -163,7 +163,7 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
 .brand-logo {
   display: block;
   width: 50px; height: 50px;
-  transform: translateY(-20px) scale(4);
+  transform: translateY(-40px) scale(4);
   transform-origin: right top;
 }
 .brand-logo img {
