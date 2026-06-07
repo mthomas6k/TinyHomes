@@ -74,11 +74,11 @@ function renderPlans(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const isPlansPage = window.location.pathname.includes('plans.html');
+  const isPlansPage = window.location.pathname.includes('/plans');
 
   container.innerHTML = PLANS.map((plan, i) => `
     <article class="plan-card" onclick="${isPlansPage ? `window.location.href='/model.html?id=${plan.slug}'` : `openModal(${i})`}" onmouseenter="startHoverCycle(this)" onmouseleave="stopHoverCycle(this)">
-      <div class="plan-render plan-wipe-container">
+      <div class="plan-render">
         ${plan.images.map((img, idx) => `<img src="${img}" alt="${plan.name}" style="z-index: ${idx === 0 ? '2' : '1'}">`).join('')}
       </div>
       <h3>${plan.name}</h3>
@@ -89,7 +89,7 @@ function renderPlans(containerId) {
 
 // Hover wipe cycle logic
 window.startHoverCycle = function(card) {
-  const imgs = card.querySelectorAll('.plan-wipe-container img');
+  const imgs = card.querySelectorAll('.plan-render img');
   if (imgs.length <= 1) return;
   let activeIdx = 0;
   
@@ -122,7 +122,7 @@ window.startHoverCycle = function(card) {
 
 window.stopHoverCycle = function(card) {
   if (card._cycleInt) clearInterval(card._cycleInt);
-  const imgs = card.querySelectorAll('.plan-wipe-container img');
+  const imgs = card.querySelectorAll('.plan-render img');
   imgs.forEach((img, i) => {
     img.style.transition = 'none';
     img.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';

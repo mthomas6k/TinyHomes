@@ -27,6 +27,7 @@
   --display:  'Bodoni Moda', 'Didot', Georgia, serif;
   --serif:    'Fraunces', Georgia, serif;
   --body:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --script:   'Caveat', cursive;
 
   /* sizing */
   --max-w: 1240px;
@@ -939,11 +940,6 @@ body.shaking {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
-}
-.plan-render img.active {
-  opacity: 1;
 }
 .plan-card h3 {
   font-family: var(--display);
@@ -1504,24 +1500,7 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 /* ============================================================
    PLAN WIPE ANIMATION
    ============================================================ */
-.plan-wipe-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.plan-wipe-container img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.plan-render img {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-.plan-wipe-container img.wipe-out {
-  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
 }
