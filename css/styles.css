@@ -317,36 +317,7 @@ body.is-home .site-header:not(.scrolled) .brand-logo img {
   padding: 40px;
 }
 
-/* --- Scroll cue Dual Layers --- */
-.scroll-cue-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.scroll-cue-wrapper .scroll-cue {
-  font-family: var(--body);
-  font-size: 10px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--white);
-  text-align: center;
-  text-decoration: none;
-  opacity: 0.78;
-  transition: opacity 0.3s var(--ease);
-}
-.scroll-cue-wrapper.nav-dark .scroll-cue {
-  color: var(--ink);
-}
-.scroll-cue-wrapper .scroll-cue:hover { opacity: 1; }
-.scroll-cue-wrapper .scroll-cue i {
-  display: block;
-  margin-top: 8px;
-  font-style: normal;
-  font-size: 16px;
-  animation: bob 2s ease-in-out infinite;
-}
+
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
