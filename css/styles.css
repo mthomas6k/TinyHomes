@@ -114,7 +114,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 14px 0;
+  padding: 24px 0;
   background: rgba(251, 250, 246, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -126,7 +126,7 @@ body.is-home .site-header:not(.scrolled) {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-bottom: none;
-  padding: 22px 0;
+  padding: 32px 0;
 }
 .site-header.scrolled {
   /* No overrides needed if default is already scrolled state */
@@ -149,7 +149,7 @@ body.is-home .site-header:not(.scrolled) {
   width: auto;
   display: block;
   transform: scale(2);
-  transform-origin: left center;
+  transform-origin: left top;
 }
 .brand-mark {
   display: none;
@@ -164,7 +164,7 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
   display: block;
   width: 50px; height: 50px;
   transform: scale(4);
-  transform-origin: right center;
+  transform-origin: right top;
 }
 .brand-logo img {
   width: 100%;
