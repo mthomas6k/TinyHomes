@@ -74,10 +74,12 @@ function renderPlans(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  container.innerHTML = PLANS.map(plan => `
-    <article class="plan-card" onclick="window.location.href='/plans.html#${plan.slug}'" onmouseenter="startHoverCycle(this)" onmouseleave="stopHoverCycle(this)">
-      <div class="plan-render">
-        ${plan.images.map((img, idx) => `<img src="${img}" alt="${plan.name}" class="${idx === 0 ? 'active' : ''}">`).join('')}
+  const isPlansPage = window.location.pathname.includes('plans.html');
+
+  container.innerHTML = PLANS.map((plan, i) => `
+    <article class="plan-card" onclick="${isPlansPage ? `window.location.href='/model.html?id=${plan.slug}'` : `openModal(${i})`}" onmouseenter="startHoverCycle(this)" onmouseleave="stopHoverCycle(this)">
+      <div class="plan-render plan-wipe-container">
+        ${plan.images.map((img, idx) => `<img src="${img}" alt="${plan.name}" style="z-index: ${idx === 0 ? '2' : '1'}">`).join('')}
       </div>
       <h3>${plan.name}</h3>
       <p class="plan-spec">${plan.specText}</p>
@@ -85,21 +87,45 @@ function renderPlans(containerId) {
   `).join('');
 }
 
-// Hover cycle logic
+// Hover wipe cycle logic
 window.startHoverCycle = function(card) {
-  const imgs = card.querySelectorAll('.plan-render img');
+  const imgs = card.querySelectorAll('.plan-wipe-container img');
   if (imgs.length <= 1) return;
   let activeIdx = 0;
+  
+  // Initialize z-indexes so first image is on top
+  imgs.forEach((img, i) => {
+    img.style.zIndex = i === 0 ? '2' : '1';
+    img.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+    img.style.transition = 'none';
+  });
+
   card._cycleInt = setInterval(() => {
-    imgs[activeIdx].classList.remove('active');
+    const currentImg = imgs[activeIdx];
     activeIdx = (activeIdx + 1) % imgs.length;
-    imgs[activeIdx].classList.add('active');
-  }, 1000); // 1 second per image
+    const nextImg = imgs[activeIdx];
+
+    // Prepare next image underneath
+    nextImg.style.zIndex = '1';
+    nextImg.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+    nextImg.style.transition = 'none';
+
+    // Put current image on top and wipe it out
+    currentImg.style.zIndex = '2';
+    // Trigger reflow
+    void currentImg.offsetWidth;
+    currentImg.style.transition = 'clip-path 1.4s cubic-bezier(0.77, 0, 0.175, 1)';
+    currentImg.style.clipPath = 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)';
+    
+  }, 1600); // Wait a bit between wipes
 };
 
 window.stopHoverCycle = function(card) {
   if (card._cycleInt) clearInterval(card._cycleInt);
-  const imgs = card.querySelectorAll('.plan-render img');
-  imgs.forEach(i => i.classList.remove('active'));
-  if (imgs[0]) imgs[0].classList.add('active');
+  const imgs = card.querySelectorAll('.plan-wipe-container img');
+  imgs.forEach((img, i) => {
+    img.style.transition = 'none';
+    img.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+    img.style.zIndex = i === 0 ? '2' : '1';
+  });
 };

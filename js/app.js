@@ -49,7 +49,31 @@
   /* ---------- render plans ---------- */
   if (typeof renderPlans === 'function') {
     renderPlans('planGrid');
+    renderPlans('planGridPage');
   }
+
+  /* ---------- global modal logic ---------- */
+  window.openModal = function(index) {
+    if (typeof PLANS === 'undefined') return;
+    const plan = PLANS[index];
+    document.getElementById('modalTitle').textContent = plan.name;
+    document.getElementById('modalSpec').innerHTML = plan.specText;
+    document.getElementById('modalImage').innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
+        <img src="${plan.image}" alt="${plan.name} Exterior" style="width: 100%; height: auto; border-radius: 4px;">
+        <img src="${plan.floorplan}" alt="${plan.name} Floorplan" style="width: 100%; height: auto; border-radius: 4px;">
+        ${plan.floorplan2 ? `<img src="${plan.floorplan2}" alt="${plan.name} Secondary Floorplan" style="width: 100%; height: auto; border-radius: 4px;">` : ''}
+      </div>
+    `;
+    document.getElementById('modalSeeMore').href = '/model.html?id=' + plan.slug;
+    document.getElementById('planModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeModal = function() {
+    document.getElementById('planModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
 
 
   /* ---------- HERO SLIDER ENGINE ---------- */
