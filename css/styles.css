@@ -141,31 +141,35 @@ body.is-home .site-header:not(.scrolled) {
 }
 .brand-name {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   line-height: 1;
 }
+.brand-name img {
+  height: 55px;
+  width: auto;
+  display: block;
+}
 .brand-mark {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  transition: color 0.4s var(--ease);
+  display: none;  /* replaced by full logo image */
 }
 .brand-sub {
-  font-family: var(--body);
-  font-size: 10px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--cognac);
-  margin-top: 4px;
-  transition: color 0.4s var(--ease);
+  display: none;  /* replaced by full logo image */
 }
-body.is-home .site-header:not(.scrolled) .brand-mark { color: var(--white); }
-body.is-home .site-header:not(.scrolled) .brand-sub { color: var(--blush); }
+body.is-home .site-header:not(.scrolled) .brand-name img {
+  /* On the hero, invert the dark logo to show white version via CSS filter */
+  filter: brightness(0) invert(1);
+}
+body.is-home .site-header:not(.scrolled) .brand-name img.brand-logo-gold {
+  /* Keep gold spear visible — override the blanket invert for the gold layer */
+}
 .brand-logo {
   display: block;
-  width: 90px; height: 90px;
+  width: 50px; height: 50px;
+}
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* =========================================================
@@ -1203,6 +1207,12 @@ body.shaking {
   text-transform: uppercase;
   color: var(--blush);
   margin-left: 10px;
+}
+.footer-logo {
+  display: block;
+  height: 100px;
+  width: auto;
+  margin-bottom: 16px;
 }
 
 /* =========================================================
