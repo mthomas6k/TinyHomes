@@ -109,9 +109,9 @@
     { name: 'The Greenwich', start: 0, end: 5 },
     { name: 'The Westport', start: 6, end: 9 },
     { name: 'The Darien', start: 10, end: 13 },
-    // { name: 'The Ocean Breeze', start: 14, end: 16 }, // Hold until floorplan is uploaded
-    { name: 'The Rowayton 2', start: 18, end: 23 }, // Corrected indices (16-17 are reserved for Ocean Breeze)
-    { name: 'The Rowayton 3', start: 24, end: 25 }, 
+    // { name: 'The Ocean Breeze', start: 14, end: 15 }, // Hold until floorplan is uploaded
+    { name: 'The Rowayton 2', start: 16, end: 21 }, // Indices 16-21 in SLIDE_DATA
+    { name: 'The Rowayton 3', start: 22, end: 23 }, // Indices 22-23 in SLIDE_DATA
   ];
 
   const sliderTrack = document.getElementById('sliderTrack');
