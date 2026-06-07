@@ -263,7 +263,7 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
 .hero-slider {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 75vh;
   min-height: 520px;
   overflow: hidden;
   background: var(--ink);
@@ -275,16 +275,31 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
   inset: 0;
   z-index: 1;
 }
+
+@keyframes wipe-in {
+  0%   { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
 .slider-slide {
   position: absolute;
   inset: 0;
+  z-index: 1;
   opacity: 0;
-  transition: opacity 1.6s ease;
-  will-change: opacity, transform;
+  will-change: clip-path, opacity;
+}
+.slider-slide.prev {
+  z-index: 2;
+  opacity: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 .slider-slide.active {
+  z-index: 3;
   opacity: 1;
+  /* Left to right wipe transition */
+  animation: wipe-in 1.4s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 }
+
 .slider-slide img {
   width: 100%;
   height: 100%;
@@ -292,50 +307,14 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
   display: block;
 }
 
-/* --- Ken Burns: gentle zoom + pan --- */
-@keyframes kenburns-a {
-  0%   { transform: scale(1)   translate(0, 0); }
-  100% { transform: scale(1.08) translate(-1%, -0.5%); }
+/* Floorplan images should not be cropped/zoomed */
+.slider-slide.is-floorplan {
+  background: white;
 }
-@keyframes kenburns-b {
-  0%   { transform: scale(1.04) translate(0.5%, 0); }
-  100% { transform: scale(1.1) translate(-0.5%, -1%); }
+.slider-slide.is-floorplan img {
+  object-fit: contain;
+  padding: 40px;
 }
-@keyframes kenburns-c {
-  0%   { transform: scale(1)   translate(0, 0); }
-  100% { transform: scale(1.06) translate(0.8%, 0.4%); }
-}
-@keyframes kenburns-d {
-  0%   { transform: scale(1.03) translate(-0.5%, 0.3%); }
-  100% { transform: scale(1.09) translate(0.3%, -0.6%); }
-}
-.slider-slide.kb-a img { animation: kenburns-a 8s ease-out forwards; }
-.slider-slide.kb-b img { animation: kenburns-b 8s ease-out forwards; }
-.slider-slide.kb-c img { animation: kenburns-c 8s ease-out forwards; }
-.slider-slide.kb-d img { animation: kenburns-d 8s ease-out forwards; }
-
-/* --- Model name overlay (bottom-left) --- */
-.slider-info {
-  position: absolute;
-  bottom: 80px;
-  left: var(--gutter, 32px);
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  pointer-events: none;
-}
-.slider-model {
-  font-family: var(--display);
-  font-size: clamp(28px, 4vw, 52px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: #fff;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.35);
-  opacity: 0;
-  transition: opacity 0.8s ease, color 0.8s ease;
-}
-.slider-model.visible { opacity: 1; }
 
 /* --- Scroll cue (inherits from existing but re-anchored) --- */
 .hero-slider .scroll-cue-hero {

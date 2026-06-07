@@ -86,10 +86,8 @@
   ];
 
   const sliderTrack = document.getElementById('sliderTrack');
-  const sliderModelEl = document.getElementById('sliderModel');
 
   if (sliderTrack && SLIDE_DATA.length > 0) {
-    const KB_CLASSES = ['kb-a', 'kb-b', 'kb-c', 'kb-d'];
     const SLIDE_DURATION = 5000; // ms per slide
     let currentIndex = -1;
 
@@ -116,10 +114,16 @@
     const playbackOrder = buildPlaybackOrder();
     let playbackPos = 0;
 
+    // Figure out which slides are floorplans
+    const floorplanIndices = new Set(MODEL_GROUPS.map(g => g.start));
+
     // --- Create slide DOM elements ---
     SLIDE_DATA.forEach((slide, i) => {
       const div = document.createElement('div');
       div.className = 'slider-slide';
+      if (floorplanIndices.has(i)) {
+        div.classList.add('is-floorplan');
+      }
       div.dataset.index = i;
       const img = document.createElement('img');
       img.src = slide.src;
@@ -136,25 +140,19 @@
       currentIndex = index;
       const slide = SLIDE_DATA[index];
 
-      // Deactivate previous
+      // Cleanup any stray .prev classes before setting the new one
+      slideEls.forEach(el => el.classList.remove('prev'));
+
+      // The currently active slide becomes .prev (it sits underneath the wipe)
       if (prevIndex >= 0 && slideEls[prevIndex]) {
         slideEls[prevIndex].classList.remove('active');
-        // Remove KB class after fade-out
-        KB_CLASSES.forEach(c => slideEls[prevIndex].classList.remove(c));
+        slideEls[prevIndex].classList.add('prev');
       }
 
-      // Activate current with random Ken Burns
-      const kb = KB_CLASSES[Math.floor(Math.random() * KB_CLASSES.length)];
-      slideEls[index].classList.add(kb, 'active');
-
-      // Update model name
-      if (sliderModelEl) {
-        sliderModelEl.classList.remove('visible');
-        setTimeout(() => {
-          sliderModelEl.textContent = slide.model;
-          sliderModelEl.classList.add('visible');
-        }, 400);
-      }
+      // The new slide becomes .active and triggers the wipe animation
+      // We force a reflow to restart the animation if needed, though adding .active should trigger it
+      void slideEls[index].offsetWidth;
+      slideEls[index].classList.add('active');
 
       // Navbar color crossfade
       if (slide.nav === 'black') {
