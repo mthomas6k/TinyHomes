@@ -129,7 +129,10 @@
         <div class="modal-desc">
           <p>This is a placeholder description for the floor plan. We can customize the exterior to match your main house, adjust window placements for your specific views, and tweak the interior layout.</p>
         </div>
-        <a href="/contact.html" class="btn btn-primary">Request This Plan</a>
+        <div style="display: flex; gap: 16px; margin-top: 32px;">
+          <a href="#" id="modalSeeMore" class="btn btn-ghost">See More Images</a>
+          <a href="/contact.html" class="btn btn-primary">Request This Plan</a>
+        </div>
       </div>
     </div>
   </div>
@@ -159,6 +162,7 @@
           <img src="${plan.floorplan}" alt="${plan.name} Floorplan" style="width: 100%; height: auto; border-radius: 4px;">
         </div>
       `;
+      document.getElementById('modalSeeMore').href = '/model.html?id=' + plan.slug;
       document.getElementById('planModal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }

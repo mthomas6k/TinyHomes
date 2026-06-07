@@ -951,6 +951,22 @@ body.shaking {
 }
 .plan-render {
   margin-bottom: 22px;
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.plan-render img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.plan-render img.active {
+  opacity: 1;
 }
 .plan-card h3 {
   font-family: var(--display);

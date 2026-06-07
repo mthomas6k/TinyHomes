@@ -164,6 +164,7 @@
     });
 
     const slideEls = sliderTrack.querySelectorAll('.slider-slide');
+    let isFirstLoad = true;
 
     function showSlide(index) {
       const prevIndex = currentIndex;
@@ -177,12 +178,21 @@
       if (prevIndex >= 0 && slideEls[prevIndex]) {
         slideEls[prevIndex].classList.remove('active');
         slideEls[prevIndex].classList.add('prev');
+        slideEls[prevIndex].style.animation = ''; // clean up any inline overrides
       }
 
       // The new slide becomes .active and triggers the wipe animation
-      // We force a reflow to restart the animation if needed, though adding .active should trigger it
       void slideEls[index].offsetWidth;
       slideEls[index].classList.add('active');
+
+      if (isFirstLoad) {
+        slideEls[index].style.animation = 'none';
+        slideEls[index].style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+        isFirstLoad = false;
+      } else {
+        slideEls[index].style.animation = '';
+        slideEls[index].style.clipPath = '';
+      }
 
       // Navbar color crossfade
       if (slide.nav === 'black') {
