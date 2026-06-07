@@ -69,44 +69,44 @@
   const SLIDE_DATA = [
     // === THE GREENWICH (pages 1–6) ===
     { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'black' },
-    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'white' },
     { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
-    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'black' },
-    { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'white' },
     
     // === THE WESTPORT (pages 7-10) ===
     { src: '/images/slider/slide-07.jpg', model: 'The Westport', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'black' },
-    { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'black' },
-    { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'black' },
+    { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'white' },
+    { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'white' },
+    { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'white' },
 
     // === THE DARIEN (pages 11-14) ===
     { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'black' },
-    { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'black' },
-    { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'black' },
+    { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'white' },
+    { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'white' },
+    { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'white' },
 
     // === THE OCEAN BREEZE (pages 15-17) ===
     { src: '/images/slider/slide-15.jpg', model: 'The Ocean Breeze', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-16.jpg', model: 'The Ocean Breeze', nav: 'black' },
-    { src: '/images/slider/slide-17.jpg', model: 'The Ocean Breeze', nav: 'black' },
+    { src: '/images/slider/slide-16.jpg', model: 'The Ocean Breeze', nav: 'white' },
+    { src: '/images/slider/slide-17.jpg', model: 'The Ocean Breeze', nav: 'white' },
 
     // === THE ROWAYTON 2 (pages 18-23) ===
     { src: '/images/slider/slide-18.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-19.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-20.jpg', model: 'The Rowayton 2', nav: 'black' },
-    { src: '/images/slider/slide-21.jpg', model: 'The Rowayton 2', nav: 'black' },
-    { src: '/images/slider/slide-22.jpg', model: 'The Rowayton 2', nav: 'black' },
-    { src: '/images/slider/slide-23.jpg', model: 'The Rowayton 2', nav: 'black' },
+    { src: '/images/slider/slide-20.jpg', model: 'The Rowayton 2', nav: 'white' },
+    { src: '/images/slider/slide-21.jpg', model: 'The Rowayton 2', nav: 'white' },
+    { src: '/images/slider/slide-22.jpg', model: 'The Rowayton 2', nav: 'white' },
+    { src: '/images/slider/slide-23.jpg', model: 'The Rowayton 2', nav: 'white' },
 
     // === THE ROWAYTON 3 (pages 24-29) ===
     { src: '/images/slider/slide-24.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-25.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-26.jpg', model: 'The Rowayton 3', nav: 'black' },
-    { src: '/images/slider/slide-27.jpg', model: 'The Rowayton 3', nav: 'black' },
-    { src: '/images/slider/slide-28.jpg', model: 'The Rowayton 3', nav: 'black' },
-    { src: '/images/slider/slide-29.jpg', model: 'The Rowayton 3', nav: 'black' },
+    { src: '/images/slider/slide-26.jpg', model: 'The Rowayton 3', nav: 'white' },
+    { src: '/images/slider/slide-27.jpg', model: 'The Rowayton 3', nav: 'white' },
+    { src: '/images/slider/slide-28.jpg', model: 'The Rowayton 3', nav: 'white' },
+    { src: '/images/slider/slide-29.jpg', model: 'The Rowayton 3', nav: 'white' },
   ];
 
   const MODEL_GROUPS = [
@@ -147,6 +147,22 @@
     const playbackOrder = buildPlaybackOrder();
     let playbackPos = 0;
 
+    // --- Header Wipe Setup ---
+    const header1 = document.getElementById('siteHeader');
+    let header2 = null;
+    if (header1) {
+      header2 = header1.cloneNode(true);
+      header2.id = 'siteHeader2';
+      // Remove child IDs to prevent duplicates
+      header2.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+      header1.parentNode.insertBefore(header2, header1.nextSibling);
+      
+      header1.style.zIndex = '100';
+      header2.style.zIndex = '101';
+      header2.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'; // default fully visible
+    }
+    let activeHeaderNum = 1;
+
     // --- Create slide DOM elements ---
     SLIDE_DATA.forEach((slide, i) => {
       const div = document.createElement('div');
@@ -160,6 +176,15 @@
       img.alt = slide.model;
       img.loading = (i <= 1) ? 'eager' : 'lazy';
       div.appendChild(img);
+      
+      // Dynamic scroll cue inside the slide so it wipes perfectly
+      const cue = document.createElement('a');
+      cue.href = '#who';
+      cue.className = 'scroll-cue scroll-cue-hero';
+      cue.innerHTML = '<span>keep scrolling</span><i>↓</i>';
+      cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+      div.appendChild(cue);
+      
       sliderTrack.appendChild(div);
     });
 
@@ -194,17 +219,33 @@
         slideEls[index].style.clipPath = '';
       }
 
-      // Navbar color crossfade
-      if (slide.nav === 'black') {
-        document.body.classList.add('nav-dark');
-      } else {
-        document.body.classList.remove('nav-dark');
-      }
+      // --- Header Sync Wipe ---
+      if (header1 && header2) {
+        const currentHeader = activeHeaderNum === 1 ? header1 : header2;
+        const nextHeader = activeHeaderNum === 1 ? header2 : header1;
 
-      // Scroll cue color
-      const cue = document.getElementById('scrollCue');
-      if (cue) {
-        cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+        if (slide.nav === 'black') {
+          nextHeader.classList.add('nav-dark');
+        } else {
+          nextHeader.classList.remove('nav-dark');
+        }
+
+        if (!isFirstLoad && prevIndex !== -1) {
+          nextHeader.style.zIndex = '101';
+          currentHeader.style.zIndex = '100';
+          
+          nextHeader.style.animation = 'none';
+          void nextHeader.offsetWidth; // trigger reflow
+          nextHeader.style.animation = 'wipe-in 1.4s cubic-bezier(0.77, 0, 0.175, 1) forwards';
+        } else {
+          // First load
+          nextHeader.style.zIndex = '101';
+          currentHeader.style.zIndex = '100';
+          nextHeader.style.animation = 'none';
+          nextHeader.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+        }
+        
+        activeHeaderNum = activeHeaderNum === 1 ? 2 : 1;
       }
     }
 

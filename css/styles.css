@@ -351,22 +351,22 @@ body.is-home .site-header:not(.scrolled) .nav-link,
 body.is-home .site-header:not(.scrolled) .nav-toggle span {
   transition: color 0.8s ease, background 0.8s ease;
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .nav-link {
+body.is-home .site-header.nav-dark:not(.scrolled) .nav-link {
   color: var(--ink);
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .nav-toggle span {
+body.is-home .site-header.nav-dark:not(.scrolled) .nav-toggle span {
   background: var(--ink);
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .brand-name img {
+body.is-home .site-header.nav-dark:not(.scrolled) .brand-name img {
   filter: none;
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .brand-logo img {
+body.is-home .site-header.nav-dark:not(.scrolled) .brand-logo img {
   filter: none;
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .scroll-cue-hero {
+body.is-home .site-header.nav-dark:not(.scrolled) .scroll-cue-hero {
   color: var(--ink);
 }
-body.is-home.nav-dark .site-header:not(.scrolled) .slider-model {
+body.is-home .site-header.nav-dark:not(.scrolled) .slider-model {
   color: var(--ink);
   text-shadow: 0 2px 16px rgba(255,255,255,0.3);
 }
