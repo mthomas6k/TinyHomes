@@ -68,7 +68,7 @@
    */
   const SLIDE_DATA = [
     // === THE GREENWICH (pages 1–6) ===
-    { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'black' },
     { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'black' },
     { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
@@ -76,25 +76,34 @@
     { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'black' },
     
     // === THE WESTPORT (pages 7-10) ===
-    { src: '/images/slider/slide-07.jpg', model: 'The Westport', nav: 'black' },
+    { src: '/images/slider/slide-07.jpg', model: 'The Westport', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'black' },
     { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'black' },
     { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'black' },
 
     // === THE DARIEN (pages 11-14) ===
-    { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black' },
+    { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'black' },
     { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'black' },
     { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'black' },
+
+    // === THE OCEAN BREEZE (pages 15-17) ===
+    // { src: '/images/slider/slide-15.jpg', model: 'The Ocean Breeze', nav: 'black', type: 'floorplan' }, // MISSING
+    { src: '/images/slider/slide-16.jpg', model: 'The Ocean Breeze', nav: 'black' },
+    { src: '/images/slider/slide-17.jpg', model: 'The Ocean Breeze', nav: 'black' },
+
+    // === THE ROWAYTON 2 (pages 18-22) ===
+    { src: '/images/slider/slide-18.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
+    { src: '/images/slider/slide-19.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
+    { src: '/images/slider/slide-20.jpg', model: 'The Rowayton 2', nav: 'black' },
   ];
 
   const MODEL_GROUPS = [
     { name: 'The Greenwich', start: 0, end: 5 },
     { name: 'The Westport', start: 6, end: 9 },
     { name: 'The Darien', start: 10, end: 13 },
-    // { name: 'The Ocean Breeze', start: 14, end: 16 },
-    // { name: 'The Rowayton 2', start: 17, end: 22 },
-    // { name: 'The Rowayton 3', start: 23, end: 28 },
+    // { name: 'The Ocean Breeze', start: 14, end: 16 }, // Hold until floorplan is uploaded
+    { name: 'The Rowayton 2', start: 16, end: 18 }, // Adjusted indices since 15 is missing
   ];
 
   const sliderTrack = document.getElementById('sliderTrack');
@@ -126,14 +135,11 @@
     const playbackOrder = buildPlaybackOrder();
     let playbackPos = 0;
 
-    // Figure out which slides are floorplans
-    const floorplanIndices = new Set(MODEL_GROUPS.map(g => g.start));
-
     // --- Create slide DOM elements ---
     SLIDE_DATA.forEach((slide, i) => {
       const div = document.createElement('div');
       div.className = 'slider-slide';
-      if (floorplanIndices.has(i)) {
+      if (slide.type === 'floorplan') {
         div.classList.add('is-floorplan');
       }
       div.dataset.index = i;
