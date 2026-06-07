@@ -8,14 +8,13 @@
 (function () {
 
   /* ---------- sticky header scroll state ---------- */
-  const headers = document.querySelectorAll('.site-header');
   const backToTop = document.getElementById('backToTop');
   let ticking = false;
   function onScroll() {
     if (!ticking) {
       window.requestAnimationFrame(() => {
         const isScrolled = window.scrollY > 20;
-        headers.forEach(h => {
+        document.querySelectorAll('.site-header').forEach(h => {
           if (isScrolled) h.classList.add('scrolled');
           else h.classList.remove('scrolled');
         });
@@ -161,6 +160,10 @@
       header1.style.zIndex = '100';
       header2.style.zIndex = '101';
       header2.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'; // default fully visible
+      
+      if (window.scrollY > 20) {
+        header2.classList.add('scrolled');
+      }
     }
     let activeHeaderNum = 1;
 
