@@ -93,9 +93,9 @@ window.startHoverCycle = function(card) {
   if (imgs.length <= 1) return;
   let activeIdx = 0;
   
-  // Initialize z-indexes so first image is on top
+  // Initialize z-indexes: 2 for active, 1 for next, 0 for rest
   imgs.forEach((img, i) => {
-    img.style.zIndex = i === 0 ? '2' : '1';
+    img.style.zIndex = i === 0 ? '2' : (i === 1 ? '1' : '0');
     img.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
     img.style.transition = 'none';
   });
@@ -104,6 +104,9 @@ window.startHoverCycle = function(card) {
     const currentImg = imgs[activeIdx];
     activeIdx = (activeIdx + 1) % imgs.length;
     const nextImg = imgs[activeIdx];
+
+    // Reset all others to z-index 0
+    imgs.forEach(img => img.style.zIndex = '0');
 
     // Prepare next image underneath
     nextImg.style.zIndex = '1';
@@ -126,6 +129,6 @@ window.stopHoverCycle = function(card) {
   imgs.forEach((img, i) => {
     img.style.transition = 'none';
     img.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
-    img.style.zIndex = i === 0 ? '2' : '1';
+    img.style.zIndex = i === 0 ? '2' : (i === 1 ? '1' : '0');
   });
 };
