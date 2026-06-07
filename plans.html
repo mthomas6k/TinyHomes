@@ -130,7 +130,7 @@
           <p>This is a placeholder description for the floor plan. We can customize the exterior to match your main house, adjust window placements for your specific views, and tweak the interior layout.</p>
         </div>
         <div style="display: flex; gap: 16px; margin-top: 32px;">
-          <a href="#" id="modalSeeMore" class="btn btn-ghost">See More Images</a>
+          <a href="#" id="modalSeeMore" class="btn btn-ghost">See More</a>
           <a href="/contact.html" class="btn btn-primary">Request This Plan</a>
         </div>
       </div>
@@ -160,6 +160,7 @@
         <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
           <img src="${plan.image}" alt="${plan.name} Exterior" style="width: 100%; height: auto; border-radius: 4px;">
           <img src="${plan.floorplan}" alt="${plan.name} Floorplan" style="width: 100%; height: auto; border-radius: 4px;">
+          ${plan.floorplan2 ? `<img src="${plan.floorplan2}" alt="${plan.name} Secondary Floorplan" style="width: 100%; height: auto; border-radius: 4px;">` : ''}
         </div>
       `;
       document.getElementById('modalSeeMore').href = '/model.html?id=' + plan.slug;

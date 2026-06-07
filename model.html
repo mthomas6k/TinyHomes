@@ -131,6 +131,9 @@
       if (plan.floorplan) {
         galleryHtml += `<img src="${plan.floorplan}" alt="${plan.name} Floorplan">`;
       }
+      if (plan.floorplan2) {
+        galleryHtml += `<img src="${plan.floorplan2}" alt="${plan.name} Secondary Floorplan">`;
+      }
       
       container.innerHTML = `
         <section class="showcase-header">

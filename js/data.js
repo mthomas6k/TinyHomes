@@ -52,6 +52,7 @@ const PLANS = [
     specText: "480 sqft &middot; 1 bed &middot; full bath",
     image: "/images/slider/slide-20.jpg",
     floorplan: "/images/slider/slide-18.jpg",
+    floorplan2: "/images/slider/slide-19.jpg",
     images: ['/images/slider/slide-20.jpg', '/images/slider/slide-21.jpg', '/images/slider/slide-22.jpg', '/images/slider/slide-23.jpg']
   },
   {
@@ -63,6 +64,7 @@ const PLANS = [
     specText: "550 sqft &middot; 1 bed &middot; full bath",
     image: "/images/slider/slide-26.jpg",
     floorplan: "/images/slider/slide-24.jpg",
+    floorplan2: "/images/slider/slide-25.jpg",
     images: ['/images/slider/slide-26.jpg', '/images/slider/slide-27.jpg', '/images/slider/slide-28.jpg', '/images/slider/slide-29.jpg']
   }
 ];
