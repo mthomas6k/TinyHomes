@@ -96,6 +96,13 @@
     { src: '/images/slider/slide-18.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-19.jpg', model: 'The Rowayton 2', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-20.jpg', model: 'The Rowayton 2', nav: 'black' },
+    { src: '/images/slider/slide-21.jpg', model: 'The Rowayton 2', nav: 'black' },
+    { src: '/images/slider/slide-22.jpg', model: 'The Rowayton 2', nav: 'black' },
+    { src: '/images/slider/slide-23.jpg', model: 'The Rowayton 2', nav: 'black' },
+
+    // === THE ROWAYTON 3 (pages 23-x) ===
+    { src: '/images/slider/slide-24.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
+    { src: '/images/slider/slide-25.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
   ];
 
   const MODEL_GROUPS = [
@@ -103,7 +110,8 @@
     { name: 'The Westport', start: 6, end: 9 },
     { name: 'The Darien', start: 10, end: 13 },
     // { name: 'The Ocean Breeze', start: 14, end: 16 }, // Hold until floorplan is uploaded
-    { name: 'The Rowayton 2', start: 16, end: 18 }, // Adjusted indices since 15 is missing
+    { name: 'The Rowayton 2', start: 18, end: 23 }, // Corrected indices (16-17 are reserved for Ocean Breeze)
+    { name: 'The Rowayton 3', start: 24, end: 25 }, 
   ];
 
   const sliderTrack = document.getElementById('sliderTrack');
