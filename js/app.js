@@ -103,6 +103,8 @@
     // === THE ROWAYTON 3 (pages 23-x) ===
     { src: '/images/slider/slide-24.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-25.jpg', model: 'The Rowayton 3', nav: 'black', type: 'floorplan' },
+    { src: '/images/slider/slide-26.jpg', model: 'The Rowayton 3', nav: 'black' },
+    { src: '/images/slider/slide-27.jpg', model: 'The Rowayton 3', nav: 'black' },
   ];
 
   const MODEL_GROUPS = [
@@ -111,7 +113,7 @@
     { name: 'The Darien', start: 10, end: 13 },
     // { name: 'The Ocean Breeze', start: 14, end: 15 }, // Hold until floorplan is uploaded
     { name: 'The Rowayton 2', start: 16, end: 21 }, // Indices 16-21 in SLIDE_DATA
-    { name: 'The Rowayton 3', start: 22, end: 23 }, // Indices 22-23 in SLIDE_DATA
+    { name: 'The Rowayton 3', start: 22, end: 25 }, // Indices 22-25 in SLIDE_DATA
   ];
 
   const sliderTrack = document.getElementById('sliderTrack');
