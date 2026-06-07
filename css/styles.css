@@ -165,7 +165,7 @@ body.is-home .site-header:not(.scrolled) .brand-mark { color: var(--white); }
 body.is-home .site-header:not(.scrolled) .brand-sub { color: var(--blush); }
 .brand-logo {
   display: block;
-  width: 60px; height: 60px;
+  width: 90px; height: 90px;
 }
 
 /* =========================================================
