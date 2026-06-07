@@ -257,80 +257,93 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
 
 /* =========================================================
    SECTION 1 — HERO (collage bg, centered TINYHOMES, ~70vh)
+/* =========================================================
+   HERO SLIDER
    ========================================================= */
-.hero {
+.hero-slider {
   position: relative;
-  height: 75vh;
+  width: 100%;
+  height: 100vh;
   min-height: 520px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
   overflow: hidden;
   background: var(--ink);
 }
-.hero-collage {
+
+/* --- Slide track & individual slides --- */
+.slider-track {
   position: absolute;
   inset: 0;
   z-index: 1;
 }
-.collage-slide {
+.slider-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1.4s ease;
+  transition: opacity 1.6s ease;
+  will-change: opacity, transform;
 }
-.collage-slide.active { opacity: 1; }
-.collage-slide .placeholder {
+.slider-slide.active {
+  opacity: 1;
+}
+.slider-slide img {
   width: 100%;
   height: 100%;
-  border: none;
-  border-radius: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(251, 250, 246, 0.08),
-    rgba(251, 250, 246, 0.08) 8px,
-    rgba(251, 250, 246, 0.12) 8px,
-    rgba(251, 250, 246, 0.12) 16px
-  );
-  color: rgba(251, 250, 246, 0.5);
+  object-fit: cover;
+  display: block;
 }
-.hero-overlay {
+
+/* --- Ken Burns: gentle zoom + pan --- */
+@keyframes kenburns-a {
+  0%   { transform: scale(1)   translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -0.5%); }
+}
+@keyframes kenburns-b {
+  0%   { transform: scale(1.04) translate(0.5%, 0); }
+  100% { transform: scale(1.1) translate(-0.5%, -1%); }
+}
+@keyframes kenburns-c {
+  0%   { transform: scale(1)   translate(0, 0); }
+  100% { transform: scale(1.06) translate(0.8%, 0.4%); }
+}
+@keyframes kenburns-d {
+  0%   { transform: scale(1.03) translate(-0.5%, 0.3%); }
+  100% { transform: scale(1.09) translate(0.3%, -0.6%); }
+}
+.slider-slide.kb-a img { animation: kenburns-a 8s ease-out forwards; }
+.slider-slide.kb-b img { animation: kenburns-b 8s ease-out forwards; }
+.slider-slide.kb-c img { animation: kenburns-c 8s ease-out forwards; }
+.slider-slide.kb-d img { animation: kenburns-d 8s ease-out forwards; }
+
+/* --- Model name overlay (bottom-left) --- */
+.slider-info {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: rgba(14, 29, 58, 0.42);
+  bottom: 80px;
+  left: var(--gutter, 32px);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
 }
-.hero-frame {
-  position: relative;
-  z-index: 3;
-  padding: 0 var(--gutter);
-}
-.hero-title {
+.slider-model {
   font-family: var(--display);
+  font-size: clamp(28px, 4vw, 52px);
   font-weight: 400;
-  font-size: clamp(56px, 11vw, 168px);
-  line-height: 0.92;
-  letter-spacing: -0.025em;
-  color: var(--white);
-  margin: 0;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.35);
+  opacity: 0;
+  transition: opacity 0.8s ease, color 0.8s ease;
 }
-.hero-sub-line {
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(16px, 1.8vw, 22px);
-  color: var(--blush);
-  margin-top: 18px;
-  letter-spacing: 0.02em;
-}
-.scroll-cue-hero {
+.slider-model.visible { opacity: 1; }
+
+/* --- Scroll cue (inherits from existing but re-anchored) --- */
+.hero-slider .scroll-cue-hero {
   position: absolute;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 3;
+  z-index: 4;
   font-family: var(--body);
   font-size: 10px;
   letter-spacing: 0.32em;
@@ -339,24 +352,44 @@ body.is-home .site-header:not(.scrolled) .brand-name img {
   text-align: center;
   text-decoration: none;
   opacity: 0.78;
-  transition: opacity 0.3s var(--ease);
+  transition: opacity 0.3s var(--ease), color 0.8s ease;
 }
-.scroll-cue-hero:hover { opacity: 1; }
-.scroll-cue-hero i {
+.hero-slider .scroll-cue-hero:hover { opacity: 1; }
+.hero-slider .scroll-cue-hero i {
   display: block;
   margin-top: 8px;
   font-style: normal;
   font-size: 16px;
   animation: bob 2s ease-in-out infinite;
 }
-.placeholder-collage {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
+}
+
+/* --- Navbar color crossfade for slider --- */
+body.is-home .site-header:not(.scrolled) .nav-link,
+body.is-home .site-header:not(.scrolled) .nav-toggle span {
+  transition: color 0.8s ease, background 0.8s ease;
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .nav-link {
+  color: var(--ink);
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .nav-toggle span {
+  background: var(--ink);
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .brand-name img {
+  filter: none;
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .brand-logo img {
+  filter: none;
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .scroll-cue-hero {
+  color: var(--ink);
+}
+body.is-home.nav-dark .site-header:not(.scrolled) .slider-model {
+  color: var(--ink);
+  text-shadow: 0 2px 16px rgba(255,255,255,0.3);
 }
 
 /* =========================================================
@@ -1221,7 +1254,7 @@ body.shaking {
    RESPONSIVE
    ========================================================= */
 @media (max-width: 960px) {
-  .hero-frame { grid-template-columns: 1fr; gap: 40px; }
+  .slider-info { bottom: 60px; }
   .bullet-grid { grid-template-columns: 1fr; }
   .value-row { grid-template-columns: 1fr; gap: 30px; }
   .plan-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1248,7 +1281,7 @@ body.shaking {
 }
 @media (max-width: 600px) {
   .plan-grid { grid-template-columns: 1fr; }
-  .hero { padding-top: 110px; }
+  .hero-slider { min-height: 400px; }
   .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
   .footer-right { flex-direction: column; gap: 16px; }
 }

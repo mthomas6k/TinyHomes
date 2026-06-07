@@ -46,31 +46,19 @@
   <main>
 
     <!-- ============================================================
-         SECTION 1 — HERO (collage + centered title, intentionally short)
+         SECTION 1 — HERO SLIDER (model showcase with Ken Burns)
          ============================================================ -->
-    <section class="hero" id="home">
-      <div class="hero-collage" id="heroCollage">
-        <div class="collage-slide active" data-src="/images/hero-1.jpg">
-          <div class="placeholder placeholder-collage">IMAGE 1: tiny home in CT lawn, golden hour ~1920×1080</div>
-        </div>
-        <div class="collage-slide" data-src="/images/hero-2.jpg">
-          <div class="placeholder placeholder-collage">IMAGE 2: interior with warm light, big window ~1920×1080</div>
-        </div>
-        <div class="collage-slide" data-src="/images/hero-3.jpg">
-          <div class="placeholder placeholder-collage">IMAGE 3: tiny home next to pool, summer ~1920×1080</div>
-        </div>
-        <div class="collage-slide" data-src="/images/hero-4.jpg">
-          <div class="placeholder placeholder-collage">IMAGE 4: detail — door, window, cedar shingle texture ~1920×1080</div>
-        </div>
-      </div>
-      <div class="hero-overlay"></div>
-
-      <div class="hero-frame">
-        <h1 class="hero-title">TINYHOMES</h1>
-        <p class="hero-sub-line">Built by hand in Darien, Connecticut.</p>
+    <section class="hero-slider" id="heroSlider">
+      <div class="slider-track" id="sliderTrack">
+        <!-- Slides are injected by JS from the SLIDE_DATA config -->
       </div>
 
-      <a href="#who" class="scroll-cue scroll-cue-hero">
+      <!-- Model name + slide counter overlay -->
+      <div class="slider-info" id="sliderInfo">
+        <span class="slider-model" id="sliderModel"></span>
+      </div>
+
+      <a href="#who" class="scroll-cue scroll-cue-hero" id="scrollCue">
         <span>keep scrolling</span>
         <i>↓</i>
       </a>

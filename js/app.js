@@ -52,32 +52,132 @@
   }
 
 
-  /* ---------- hero collage: crossfade every 3s ---------- */
-  const collage = document.getElementById('heroCollage');
-  if (collage) {
-    const slides = collage.querySelectorAll('.collage-slide');
-    
-    // Load images
-    slides.forEach(slide => {
-      const src = slide.getAttribute('data-src');
-      if (src) {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          slide.style.backgroundImage = `url(${src})`;
-          slide.style.backgroundSize = 'cover';
-          slide.style.backgroundPosition = 'center';
-          slide.innerHTML = '';
-        };
+  /* ---------- HERO SLIDER ENGINE ---------- */
+  /* 
+   * SLIDE_DATA: master config for every slide.
+   * Each entry: { src, model, nav }
+   *   src   = image path
+   *   model = model name string
+   *   nav   = 'white' or 'black' (navbar text color for this slide)
+   *
+   * MODEL_GROUPS: defines which slide indices belong to each model
+   * and which index is the floor plan (first image in each group).
+   * The slider plays through all slides of one model, then moves
+   * to the next model. On each page load, the starting model is
+   * randomized, but it always begins on the floor plan of that model.
+   */
+  const SLIDE_DATA = [
+    // === THE GREENWICH (pages 1–5, page 6 coming next batch) ===
+    { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'black' },
+    { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'black' },
+    // === MORE MODELS WILL BE APPENDED HERE ===
+  ];
+
+  const MODEL_GROUPS = [
+    { name: 'The Greenwich', start: 0, end: 4 },  // indices 0–4 (will extend to 5 when page 6 arrives)
+    // { name: 'The Westport', start: 6, end: 9 },
+    // { name: 'The Darien', start: 10, end: 13 },
+    // { name: 'The Ocean Breeze', start: 14, end: 16 },
+    // { name: 'The Rowayton 2', start: 17, end: 22 },
+    // { name: 'The Rowayton 3', start: 23, end: 28 },
+  ];
+
+  const sliderTrack = document.getElementById('sliderTrack');
+  const sliderModelEl = document.getElementById('sliderModel');
+
+  if (sliderTrack && SLIDE_DATA.length > 0) {
+    const KB_CLASSES = ['kb-a', 'kb-b', 'kb-c', 'kb-d'];
+    const SLIDE_DURATION = 5000; // ms per slide
+    let currentIndex = -1;
+
+    // --- Build the ordered playback sequence ---
+    // Shuffle model order, but keep slides within each model in original order.
+    // Always start each model on its floor plan (first slide in group).
+    function buildPlaybackOrder() {
+      const groupIndices = MODEL_GROUPS.map((_, i) => i);
+      // Fisher-Yates shuffle the model order
+      for (let i = groupIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [groupIndices[i], groupIndices[j]] = [groupIndices[j], groupIndices[i]];
       }
+      const order = [];
+      groupIndices.forEach(gi => {
+        const g = MODEL_GROUPS[gi];
+        for (let s = g.start; s <= g.end; s++) {
+          order.push(s);
+        }
+      });
+      return order;
+    }
+
+    const playbackOrder = buildPlaybackOrder();
+    let playbackPos = 0;
+
+    // --- Create slide DOM elements ---
+    SLIDE_DATA.forEach((slide, i) => {
+      const div = document.createElement('div');
+      div.className = 'slider-slide';
+      div.dataset.index = i;
+      const img = document.createElement('img');
+      img.src = slide.src;
+      img.alt = slide.model;
+      img.loading = (i <= 1) ? 'eager' : 'lazy';
+      div.appendChild(img);
+      sliderTrack.appendChild(div);
     });
 
-    let current = 0;
+    const slideEls = sliderTrack.querySelectorAll('.slider-slide');
+
+    function showSlide(index) {
+      const prevIndex = currentIndex;
+      currentIndex = index;
+      const slide = SLIDE_DATA[index];
+
+      // Deactivate previous
+      if (prevIndex >= 0 && slideEls[prevIndex]) {
+        slideEls[prevIndex].classList.remove('active');
+        // Remove KB class after fade-out
+        KB_CLASSES.forEach(c => slideEls[prevIndex].classList.remove(c));
+      }
+
+      // Activate current with random Ken Burns
+      const kb = KB_CLASSES[Math.floor(Math.random() * KB_CLASSES.length)];
+      slideEls[index].classList.add(kb, 'active');
+
+      // Update model name
+      if (sliderModelEl) {
+        sliderModelEl.classList.remove('visible');
+        setTimeout(() => {
+          sliderModelEl.textContent = slide.model;
+          sliderModelEl.classList.add('visible');
+        }, 400);
+      }
+
+      // Navbar color crossfade
+      if (slide.nav === 'black') {
+        document.body.classList.add('nav-dark');
+      } else {
+        document.body.classList.remove('nav-dark');
+      }
+
+      // Scroll cue color
+      const cue = document.getElementById('scrollCue');
+      if (cue) {
+        cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+      }
+    }
+
+    // Start on first slide of random model
+    showSlide(playbackOrder[0]);
+
+    // Auto-advance
     setInterval(() => {
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-    }, 3000);
+      playbackPos = (playbackPos + 1) % playbackOrder.length;
+      showSlide(playbackOrder[playbackPos]);
+    }, SLIDE_DURATION);
   }
 
 
