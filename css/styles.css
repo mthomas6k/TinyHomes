@@ -1374,17 +1374,17 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 /* Admin Panel Revamp (Matrix Theme) */
 .admin-panel {
   position: fixed;
-  inset: 0 0 0 40%;
+  inset: 0;
   background: transparent;
   color: #f0f0f0;
   z-index: 1000;
-  padding: 40px;
+  padding: 60px;
   transform: translateX(100%);
   transition: transform 0.5s var(--ease);
   overflow-y: auto;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-@media (max-width: 960px) { .admin-panel { inset: 0; } }
+@media (max-width: 960px) { .admin-panel { padding: 20px; } }
 .admin-panel.open { transform: translateX(0); }
 
 /* Matrix Canvas */
@@ -1392,7 +1392,7 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   position: fixed;
   inset: 0;
   display: none;
-  z-index: -1;
+  z-index: 999;
 }
 
 .admin-header {
