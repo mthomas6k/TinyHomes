@@ -258,7 +258,7 @@
           nextHeader.classList.remove('nav-dark');
         }
 
-        if (!isFirstLoad && prevIndex !== -1) {
+        if (!isFirstLoad && prevIndex !== -1 && window.scrollY <= 20) {
           nextHeader.style.zIndex = '101';
           currentHeader.style.zIndex = '100';
           
@@ -266,7 +266,7 @@
           void nextHeader.offsetWidth; // trigger reflow
           nextHeader.style.animation = 'wipe-in 1.4s cubic-bezier(0.77, 0, 0.175, 1) forwards';
         } else {
-          // First load
+          // First load or Scrolled Down
           nextHeader.style.zIndex = '101';
           currentHeader.style.zIndex = '100';
           nextHeader.style.animation = 'none';
