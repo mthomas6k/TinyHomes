@@ -94,16 +94,16 @@
     // === THE GREENWICH (pages 1–6) ===
     { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'white' },
-    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'mixed' },
-    { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'mixed' },
-    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'mixed' },
-    { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'mixed' },
     
     // === THE WESTPORT (pages 7-10) ===
     { src: '/images/slider/slide-07.jpg', model: 'The Westport', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'white' },
-    { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'white' },
-    { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'white' },
+    { src: '/images/slider/slide-08.jpg', model: 'The Westport', nav: 'mixed' },
+    { src: '/images/slider/slide-09.jpg', model: 'The Westport', nav: 'mixed' },
+    { src: '/images/slider/slide-10.jpg', model: 'The Westport', nav: 'mixed' },
 
     // === THE DARIEN (pages 11-14) ===
     { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black', type: 'floorplan' },
