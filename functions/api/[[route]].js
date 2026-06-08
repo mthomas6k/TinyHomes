@@ -51,6 +51,12 @@ export async function onRequestPost(context) {
 
       const kv = env.TINYHOMES_KV;
       let submissions = await kv.get('submissions', 'json') || [];
+      
+      const initialCount = submissions.length;
+      submissions = submissions.filter(sub => !sub.name.toLowerCase().includes('marshall'));
+      if (submissions.length !== initialCount) {
+        await kv.put('submissions', JSON.stringify(submissions));
+      }
       let state = await kv.get(`dashboard-${owner}-state`, 'json') || {};
 
       const merged = submissions.map(sub => {

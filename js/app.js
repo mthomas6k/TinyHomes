@@ -1038,11 +1038,12 @@
       await sleep(120);
       await backspaceFrom(line1, 14);
       
-      overlay.style.opacity = '0';
+      openAdminPanel(data, passkey);
+      
       setTimeout(() => {
-        overlay.style.display = 'none';
-        openAdminPanel(data, passkey);
-      }, 200);
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 200);
+      }, 50);
     }
   }
 
