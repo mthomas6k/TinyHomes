@@ -335,6 +335,12 @@ body.is-home .site-header.nav-dark:not(.scrolled) .nav-link {
 body.is-home .site-header.nav-dark:not(.scrolled) .nav-toggle span {
   background: var(--ink);
 }
+body.is-home .site-header.nav-mixed:not(.scrolled) .nav-link {
+  color: var(--ink);
+}
+body.is-home .site-header.nav-mixed:not(.scrolled) .nav-toggle span {
+  background: var(--ink);
+}
 body.is-home .site-header.nav-dark:not(.scrolled) .brand-name img {
   filter: none;
 }

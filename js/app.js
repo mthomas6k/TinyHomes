@@ -94,9 +94,9 @@
     // === THE GREENWICH (pages 1–6) ===
     { src: '/images/slider/slide-01.jpg', model: 'The Greenwich', nav: 'black', type: 'floorplan' },
     { src: '/images/slider/slide-02.jpg', model: 'The Greenwich', nav: 'white' },
-    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'white' },
-    { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'white' },
-    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'white' },
+    { src: '/images/slider/slide-03.jpg', model: 'The Greenwich', nav: 'mixed' },
+    { src: '/images/slider/slide-04.jpg', model: 'The Greenwich', nav: 'mixed' },
+    { src: '/images/slider/slide-05.jpg', model: 'The Greenwich', nav: 'mixed' },
     { src: '/images/slider/slide-06.jpg', model: 'The Greenwich', nav: 'white' },
     
     // === THE WESTPORT (pages 7-10) ===
@@ -107,9 +107,9 @@
 
     // === THE DARIEN (pages 11-14) ===
     { src: '/images/slider/slide-11.jpg', model: 'The Darien', nav: 'black', type: 'floorplan' },
-    { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'white' },
-    { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'white' },
-    { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'white' },
+    { src: '/images/slider/slide-12.jpg', model: 'The Darien', nav: 'mixed' },
+    { src: '/images/slider/slide-13.jpg', model: 'The Darien', nav: 'mixed' },
+    { src: '/images/slider/slide-14.jpg', model: 'The Darien', nav: 'mixed' },
 
     // === THE OCEAN BREEZE (pages 15-17) ===
     { src: '/images/slider/slide-15.jpg', model: 'The Ocean Breeze', nav: 'black', type: 'floorplan' },
@@ -254,8 +254,12 @@
 
         if (slide.nav === 'black') {
           nextHeader.classList.add('nav-dark');
-        } else {
+          nextHeader.classList.remove('nav-mixed');
+        } else if (slide.nav === 'mixed') {
+          nextHeader.classList.add('nav-mixed');
           nextHeader.classList.remove('nav-dark');
+        } else {
+          nextHeader.classList.remove('nav-dark', 'nav-mixed');
         }
 
         if (!isFirstLoad && prevIndex !== -1 && window.scrollY <= 20) {
