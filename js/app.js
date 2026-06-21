@@ -58,6 +58,7 @@
     const plan = PLANS[index];
     document.getElementById('modalTitle').textContent = plan.name;
     document.getElementById('modalSpec').innerHTML = plan.specText;
+    document.getElementById('modalDesc').textContent = plan.description || '';
     document.getElementById('modalImage').innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
         <img src="${plan.image}" alt="${plan.name} Exterior" style="width: 100%; height: auto; border-radius: 4px;">
@@ -145,12 +146,11 @@
   const sliderTrack = document.getElementById('sliderTrack');
 
   if (sliderTrack && SLIDE_DATA.length > 0) {
-    const SLIDE_DURATION = 5000; // ms per slide
+    const SLIDE_DURATION = 3500; // ms per slide
     let currentIndex = -1;
 
     // --- Build the ordered playback sequence ---
     // Shuffle model order, but keep slides within each model in original order.
-    // Always start each model on its floor plan (first slide in group).
     function buildPlaybackOrder() {
       const groupIndices = MODEL_GROUPS.map((_, i) => i);
       // Fisher-Yates shuffle the model order
@@ -162,7 +162,9 @@
       groupIndices.forEach(gi => {
         const g = MODEL_GROUPS[gi];
         for (let s = g.start; s <= g.end; s++) {
-          order.push(s);
+          if (SLIDE_DATA[s].type !== 'floorplan') {
+            order.push(s);
+          }
         }
       });
       return order;
