@@ -215,8 +215,21 @@
       cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
       div.appendChild(cue);
       
-      // Dynamic model name caption
-      if (slide.model) {
+      sliderTrack.appendChild(div);
+    });
+
+    const slideEls = sliderTrack.querySelectorAll('.slider-slide');
+    let isFirstLoad = true;
+    let currentCaptionModel = null;
+    const heroCaptionContainer = document.getElementById('heroCaptionContainer');
+
+    function showSlide(index) {
+      const prevIndex = currentIndex;
+      currentIndex = index;
+      const slide = SLIDE_DATA[index];
+
+      // --- Model Caption Wipe ---
+      if (heroCaptionContainer && slide.model) {
         let modelName = slide.model;
         if (typeof PLANS !== 'undefined') {
           const planData = PLANS.find(p => p.slug === slide.model);
@@ -224,23 +237,41 @@
         } else {
           modelName = modelName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
-        const caption = document.createElement('div');
-        caption.className = 'hero-model-caption';
-        caption.textContent = modelName;
-        caption.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
-        div.appendChild(caption);
+
+        if (modelName !== currentCaptionModel) {
+          currentCaptionModel = modelName;
+          
+          const existingCaptions = heroCaptionContainer.querySelectorAll('.hero-caption-item');
+          existingCaptions.forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('prev');
+            el.style.animation = ''; // clean up
+          });
+
+          const captionItem = document.createElement('div');
+          captionItem.className = 'hero-caption-item';
+          
+          const captionText = document.createElement('div');
+          captionText.className = 'hero-caption-text';
+          captionText.textContent = modelName;
+          captionText.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+          
+          captionItem.appendChild(captionText);
+          heroCaptionContainer.appendChild(captionItem);
+          
+          void captionItem.offsetWidth;
+          captionItem.classList.add('active');
+
+          if (isFirstLoad) {
+            captionItem.style.animation = 'none';
+            captionItem.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+          }
+          
+          if (existingCaptions.length > 2) {
+            existingCaptions[0].remove();
+          }
+        }
       }
-      
-      sliderTrack.appendChild(div);
-    });
-
-    const slideEls = sliderTrack.querySelectorAll('.slider-slide');
-    let isFirstLoad = true;
-
-    function showSlide(index) {
-      const prevIndex = currentIndex;
-      currentIndex = index;
-      const slide = SLIDE_DATA[index];
 
       // Cleanup any stray .prev classes before setting the new one
       slideEls.forEach(el => el.classList.remove('prev'));

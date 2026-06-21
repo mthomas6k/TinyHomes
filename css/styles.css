@@ -266,7 +266,7 @@ body.is-home .site-header:not(.scrolled) .brand-logo img {
 .hero-slider {
   position: relative;
   width: 100%;
-  height: calc(75vh - 1px);
+  height: calc(75vh - 5px);
   min-height: 520px;
   overflow: hidden;
   background: var(--ink);
@@ -1629,23 +1629,36 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   50% { transform: translateX(10px); }
 }
 
-.hero-model-caption {
+.hero-caption-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+.hero-caption-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: clip-path, opacity;
+}
+.hero-caption-item.prev {
+  z-index: 1;
+  opacity: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.hero-caption-item.active {
+  z-index: 2;
+  opacity: 1;
+  animation: wipe-in 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+.hero-caption-text {
   position: absolute;
   bottom: 40px;
   left: 40px;
   font-family: var(--quirky);
   font-size: 40px;
   font-weight: 400;
-  z-index: 10;
+  color: var(--white);
   text-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.8s var(--ease) 0.3s, transform 0.8s var(--ease) 0.3s;
-}
-
-.slider-slide.active .hero-model-caption {
-  opacity: 1;
-  transform: translateY(0);
 }
 
