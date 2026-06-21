@@ -378,6 +378,7 @@ body.is-home .site-header.nav-dark:not(.scrolled) .slider-model {
   padding: 0;
   position: relative;
   height: 180vh;
+  margin-top: -1px;
 }
 .section-who .sticky-stage {
   position: sticky;
@@ -1587,37 +1588,24 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 }
 
 /* Custom additions for slider drag & scroll cue */
-.scroll-cue-hero {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+.drag-cue-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-family: var(--body);
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--white);
-  z-index: 10;
-  animation: floatBounce 2s infinite ease-in-out;
-  pointer-events: none;
-}
-@keyframes floatBounce {
-  0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, 10px); }
-}
-
-.ba-handle-text {
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--body);
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.8);
-  padding: 4px 8px;
-  border-radius: 4px;
-  pointer-events: none;
+  color: var(--cognac);
+  margin: 0 auto;
+  animation: floatDragX 2s infinite ease-in-out;
+  width: max-content;
+}
+.drag-cue-top span {
+  font-size: 18px;
+}
+@keyframes floatDragX {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
 }
