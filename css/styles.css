@@ -1644,12 +1644,16 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 .hero-caption-item.prev {
   z-index: 1;
   opacity: 1;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  animation: wipe-out 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 }
 .hero-caption-item.active {
   z-index: 2;
   opacity: 1;
   animation: wipe-in 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+@keyframes wipe-out {
+  0%   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
 }
 .hero-caption-text {
   position: absolute;
