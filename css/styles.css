@@ -1637,7 +1637,9 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 }
 .hero-caption-item {
   position: absolute;
-  inset: 0;
+  bottom: 40px;
+  left: 40px;
+  width: max-content;
   opacity: 0;
   will-change: clip-path, opacity;
 }
@@ -1656,9 +1658,6 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
 }
 .hero-caption-text {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
   font-family: var(--quirky);
   font-size: 40px;
   font-weight: 400;
