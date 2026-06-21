@@ -266,7 +266,7 @@ body.is-home .site-header:not(.scrolled) .brand-logo img {
 .hero-slider {
   position: relative;
   width: 100%;
-  height: 75vh;
+  height: calc(75vh - 1px);
   min-height: 520px;
   overflow: hidden;
   background: var(--ink);
@@ -1588,6 +1588,25 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
 }
 
 /* Custom additions for slider drag & scroll cue */
+.scroll-cue-hero {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--body);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+  z-index: 10;
+  animation: floatBounce 2s infinite ease-in-out;
+  pointer-events: none;
+}
+@keyframes floatBounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 10px); }
+}
+
 .drag-cue-top {
   display: flex;
   align-items: center;
@@ -1598,7 +1617,7 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--cognac);
-  margin: 0 auto;
+  margin: 0 auto 12px auto;
   animation: floatDragX 2s infinite ease-in-out;
   width: max-content;
 }
