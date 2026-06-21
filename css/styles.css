@@ -1628,3 +1628,24 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(10px); }
 }
+
+.hero-model-caption {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  font-family: var(--quirky);
+  font-size: 40px;
+  font-weight: 400;
+  z-index: 10;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s var(--ease) 0.3s, transform 0.8s var(--ease) 0.3s;
+}
+
+.slider-slide.active .hero-model-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+

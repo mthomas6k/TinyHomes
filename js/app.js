@@ -215,6 +215,22 @@
       cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
       div.appendChild(cue);
       
+      // Dynamic model name caption
+      if (slide.model) {
+        let modelName = slide.model;
+        if (typeof PLANS !== 'undefined') {
+          const planData = PLANS.find(p => p.slug === slide.model);
+          if (planData) modelName = planData.name;
+        } else {
+          modelName = modelName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        const caption = document.createElement('div');
+        caption.className = 'hero-model-caption';
+        caption.textContent = modelName;
+        caption.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+        div.appendChild(caption);
+      }
+      
       sliderTrack.appendChild(div);
     });
 

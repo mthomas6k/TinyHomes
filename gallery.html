@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/data.js"></script>
   <style>
     .gallery-grid {
       display: grid;
@@ -98,27 +99,15 @@
         <p class="eyebrow">completed builds</p>
         <h1 class="display-h2">The gallery.</h1>
         
-        <div class="gallery-grid" id="galleryGrid">
-          <!-- 6 placeholders -->
-          <div class="gallery-item" onclick="openLightbox('IMAGE 1: Exterior daylight')">
-            <div class="placeholder">IMAGE 1</div>
-          </div>
-          <div class="gallery-item" onclick="openLightbox('IMAGE 2: Interior kitchen detail')">
-            <div class="placeholder">IMAGE 2</div>
-          </div>
-          <div class="gallery-item" onclick="openLightbox('IMAGE 3: Bathroom finishes')">
-            <div class="placeholder">IMAGE 3</div>
-          </div>
-          <div class="gallery-item" onclick="openLightbox('IMAGE 4: Golden hour exterior')">
-            <div class="placeholder">IMAGE 4</div>
-          </div>
-          <div class="gallery-item" onclick="openLightbox('IMAGE 5: Loft bed area')">
-            <div class="placeholder">IMAGE 5</div>
-          </div>
-          <div class="gallery-item" onclick="openLightbox('IMAGE 6: Winter setting')">
-            <div class="placeholder">IMAGE 6</div>
-          </div>
+        <div class="gallery-category" style="margin-top: 40px; margin-bottom: 24px;">
+          <h2 class="display-h2" style="font-size: 40px;">Exteriors</h2>
         </div>
+        <div class="gallery-grid" id="exteriorGrid"></div>
+
+        <div class="gallery-category" style="margin-top: 80px; margin-bottom: 24px;">
+          <h2 class="display-h2" style="font-size: 40px;">Floorplans</h2>
+        </div>
+        <div class="gallery-grid" id="floorplanGrid"></div>
       </div>
     </section>
 
@@ -143,14 +132,18 @@
 
   <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
     <button class="lightbox-close">&times;</button>
-    <div class="lightbox-content placeholder" id="lightboxContent"></div>
+    <div class="lightbox-content" id="lightboxContent" style="background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+      <img id="lightboxImage" src="" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 4px;">
+      <p id="lightboxCaption" style="color: white; margin-top: 16px; font-family: var(--body); letter-spacing: 0.1em; text-transform: uppercase; font-size: 14px;"></p>
+    </div>
   </div>
 
   <script src="js/app.js"></script>
   <script>
-    function openLightbox(caption) {
+    function openLightbox(caption, imgSrc) {
       const lb = document.getElementById('lightbox');
-      document.getElementById('lightboxContent').innerText = caption;
+      document.getElementById('lightboxImage').src = imgSrc;
+      document.getElementById('lightboxCaption').innerText = caption;
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -162,6 +155,39 @@
     }
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox({target: {id: 'lightbox'}});
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof PLANS !== 'undefined') {
+        const floorplanGrid = document.getElementById('floorplanGrid');
+        const exteriorGrid = document.getElementById('exteriorGrid');
+
+        PLANS.forEach(plan => {
+          // Add exteriors
+          plan.images.forEach((imgSrc, i) => {
+            const extItem = document.createElement('div');
+            extItem.className = 'gallery-item';
+            extItem.onclick = () => openLightbox(`${plan.name} - Exterior`, imgSrc);
+            extItem.innerHTML = `<img src="${imgSrc}" alt="${plan.name} Exterior" class="placeholder" style="object-fit: cover;">`;
+            exteriorGrid.appendChild(extItem);
+          });
+
+          // Add floorplans
+          const fpItem = document.createElement('div');
+          fpItem.className = 'gallery-item';
+          fpItem.onclick = () => openLightbox(`${plan.name} - Floorplan`, plan.floorplan);
+          fpItem.innerHTML = `<img src="${plan.floorplan}" alt="${plan.name} Floorplan" class="placeholder" style="object-fit: contain; padding: 20px; background: white;">`;
+          floorplanGrid.appendChild(fpItem);
+
+          if (plan.floorplan2) {
+            const fpItem2 = document.createElement('div');
+            fpItem2.className = 'gallery-item';
+            fpItem2.onclick = () => openLightbox(`${plan.name} - Upper Floorplan`, plan.floorplan2);
+            fpItem2.innerHTML = `<img src="${plan.floorplan2}" alt="${plan.name} Upper Floorplan" class="placeholder" style="object-fit: contain; padding: 20px; background: white;">`;
+            floorplanGrid.appendChild(fpItem2);
+          }
+        });
+      }
     });
   </script>
 </body>
