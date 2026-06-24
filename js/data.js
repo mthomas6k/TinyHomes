@@ -43,9 +43,9 @@ const PLANS = [
     baths: 1,
     specText: "212 sq ft finished &middot; studio &middot; 1 bath",
     description: "A studio-style layout built for simplicity. One open living space with a bath tucked off to the side. This is the smallest model we offer, and the one most people picture when they hear \"tiny home.\" No frills, no waste, just a clean place to land.",
-    image: "/images/slider/slide-16.jpg",
+    image: "/images/slider/slide-17.jpg",
     floorplan: "/images/slider/slide-15.jpg",
-    images: ['/images/slider/slide-16.jpg', '/images/slider/slide-17.jpg']
+    images: ['/images/slider/slide-17.jpg', '/images/slider/slide-16.jpg']
   },
   {
     slug: "rowayton-2",
@@ -55,10 +55,10 @@ const PLANS = [
     baths: 1,
     specText: "640 sq ft garage &middot; 330 sq ft living above",
     description: "A two-car garage downstairs with a full one-bedroom living space built above it. Kitchen, living room, bedroom, and bath all live upstairs, with a full washer-dryer combo built in. Good fit for anyone who needs covered parking and a separate living unit on the same footprint, like an in-law setup or a long-term guest space.",
-    image: "/images/slider/slide-20.jpg",
+    image: "/images/slider/slide-21.jpg",
     floorplan: "/images/slider/slide-18.jpg",
     floorplan2: "/images/slider/slide-19.jpg",
-    images: ['/images/slider/slide-20.jpg', '/images/slider/slide-21.jpg', '/images/slider/slide-22.jpg', '/images/slider/slide-23.jpg']
+    images: ['/images/slider/slide-21.jpg', '/images/slider/slide-20.jpg', '/images/slider/slide-22.jpg', '/images/slider/slide-23.jpg']
   },
   {
     slug: "rowayton-3",
@@ -68,10 +68,10 @@ const PLANS = [
     baths: 1,
     specText: "859 sq ft garage &middot; 431 sq ft living above",
     description: "The bigger sibling to the Rowayton 2. Three-car garage on the ground floor, with a full living room, bedroom, and bath above. More room to actually live in upstairs, while still keeping all that garage space on the ground.",
-    image: "/images/slider/slide-26.jpg",
+    image: "/images/slider/slide-27.jpg",
     floorplan: "/images/slider/slide-24.jpg",
     floorplan2: "/images/slider/slide-25.jpg",
-    images: ['/images/slider/slide-26.jpg', '/images/slider/slide-27.jpg', '/images/slider/slide-28.jpg', '/images/slider/slide-29.jpg']
+    images: ['/images/slider/slide-27.jpg', '/images/slider/slide-26.jpg', '/images/slider/slide-28.jpg', '/images/slider/slide-29.jpg']
   }
 ];
 
@@ -106,7 +106,8 @@ window.startHoverCycle = function(card) {
     img.style.transition = 'none';
   });
 
-  card._cycleInt = setInterval(() => {
+  // Fire the first wipe immediately (no delay)
+  function doWipe() {
     const currentImg = imgs[activeIdx];
     activeIdx = (activeIdx + 1) % imgs.length;
     const nextImg = imgs[activeIdx];
@@ -125,8 +126,12 @@ window.startHoverCycle = function(card) {
     void currentImg.offsetWidth;
     currentImg.style.transition = 'clip-path 0.9s cubic-bezier(0.77, 0, 0.175, 1)';
     currentImg.style.clipPath = 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)';
-    
-  }, 1200); // Wait a bit between wipes
+  }
+
+  // Start the first wipe immediately
+  doWipe();
+  // Continue cycling
+  card._cycleInt = setInterval(doWipe, 1200);
 };
 
 window.stopHoverCycle = function(card) {

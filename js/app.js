@@ -373,10 +373,22 @@
   }
 
   if (slider) {
-    slider.addEventListener('mousedown', (e) => { dragging = true; setSlider(e.clientX); });
+    let baHintStopped = false;
+    // Add hint class initially
+    if (baHandle) baHandle.classList.add('hinting');
+
+    function stopHint() {
+      if (!baHintStopped && baHandle) {
+        baHintStopped = true;
+        baHandle.classList.remove('hinting');
+        baHandle.style.animation = 'none';
+      }
+    }
+
+    slider.addEventListener('mousedown', (e) => { dragging = true; stopHint(); setSlider(e.clientX); });
     window.addEventListener('mousemove', (e) => { if (dragging) setSlider(e.clientX); });
     window.addEventListener('mouseup', () => { dragging = false; });
-    slider.addEventListener('touchstart', (e) => { setSlider(e.touches[0].clientX); }, { passive: true });
+    slider.addEventListener('touchstart', (e) => { stopHint(); setSlider(e.touches[0].clientX); }, { passive: true });
     slider.addEventListener('touchmove', (e) => { setSlider(e.touches[0].clientX); }, { passive: true });
     // init at 50% so caption opacities match starting clip-path
     const r = slider.getBoundingClientRect();
@@ -537,6 +549,8 @@
       const total = section.offsetHeight - window.innerHeight;
       const HEAD_OFFSET = 120;
       let p = Math.min(Math.max((-rect.top + HEAD_OFFSET) / total, 0), 1);
+      /* Item 16: 1.4× multiplier so paint completes ~30% sooner */
+      p = Math.min(1, p * 1.4);
       if (latched) p = 1;
 
       const bandsPortion = 0.85;

@@ -75,9 +75,11 @@
         <a href="/plans.html" class="nav-link">Plans</a>
         <a href="/gallery.html" class="nav-link">Gallery</a>
         <a href="/about.html" class="nav-link">About</a>
+        <a href="/team.html" class="nav-link">Team</a>
         <a href="/contact.html" class="nav-link">Contact</a>
       </nav>
-      <a href="/contact.html" class="brand-logo desktop-only">
+      <a href="/contact.html" class="brand-phone">
+        <span class="brand-phone-number">(203) 555-0100</span>
         <img src="/images/logo.png" alt="TinyHomes">
       </a>
     </div>
@@ -143,6 +145,13 @@
             <p class="showcase-spec">${plan.specText}</p>
           </div>
         </section>
+        ${plan.description ? `
+        <section style="padding: 40px 0 0; background: var(--white);">
+          <div class="gallery-stack" style="gap: 0;">
+            <p style="font-family: var(--body); font-weight: 300; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.7; color: var(--ink); opacity: 0.78; max-width: 800px; margin: 0 auto; text-align: center;">${plan.description}</p>
+          </div>
+        </section>
+        ` : ''}
         <section class="showcase-gallery">
           <div class="gallery-stack">
             ${galleryHtml}
