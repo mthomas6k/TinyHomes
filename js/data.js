@@ -55,7 +55,7 @@ const PLANS = [
     baths: 1,
     specText: "640 sq ft garage &middot; 330 sq ft living above",
     description: "A two-car garage downstairs with a full one-bedroom living space built above it. Kitchen, living room, bedroom, and bath all live upstairs, with a full washer-dryer combo built in. Good fit for anyone who needs covered parking and a separate living unit on the same footprint, like an in-law setup or a long-term guest space.",
-    image: "/images/slider/slide-21.jpg",
+    image: "/images/slider/slide-22.jpg",
     floorplan: "/images/slider/slide-18.jpg",
     floorplan2: "/images/slider/slide-19.jpg",
     images: ['/images/slider/slide-21.jpg', '/images/slider/slide-20.jpg', '/images/slider/slide-22.jpg', '/images/slider/slide-23.jpg']
@@ -68,7 +68,7 @@ const PLANS = [
     baths: 1,
     specText: "859 sq ft garage &middot; 431 sq ft living above",
     description: "The bigger sibling to the Rowayton 2. Three-car garage on the ground floor, with a full living room, bedroom, and bath above. More room to actually live in upstairs, while still keeping all that garage space on the ground.",
-    image: "/images/slider/slide-27.jpg",
+    image: "/images/slider/slide-28.jpg",
     floorplan: "/images/slider/slide-24.jpg",
     floorplan2: "/images/slider/slide-25.jpg",
     images: ['/images/slider/slide-27.jpg', '/images/slider/slide-26.jpg', '/images/slider/slide-28.jpg', '/images/slider/slide-29.jpg']

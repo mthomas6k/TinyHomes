@@ -1677,21 +1677,16 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   opacity: 0.7;
 }
 .brand-phone img {
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 .brand-phone-number {
   font-family: var(--body);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
-}
-/* Scale icon like the old .brand-logo */
-.brand-phone {
-  transform: translateY(-76px) scale(4);
-  transform-origin: right top;
 }
 body.is-home .site-header:not(.scrolled) .brand-phone img {
   filter: brightness(0) invert(1);
@@ -1729,8 +1724,31 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
   80%  { transform: translateX(0); }
   100% { transform: translateX(0); }
 }
+@keyframes ba-hint-wipe {
+  0%   { clip-path: inset(0 0 0 50%); }
+  8%   { clip-path: inset(0 0 0 calc(50% + 25px)); }
+  16%  { clip-path: inset(0 0 0 calc(50% - 20px)); }
+  24%  { clip-path: inset(0 0 0 calc(50% + 15px)); }
+  30%  { clip-path: inset(0 0 0 calc(50% - 10px)); }
+  35%  { clip-path: inset(0 0 0 calc(50% + 5px)); }
+  40%  { clip-path: inset(0 0 0 50%); }
+  /* rest */
+  65%  { clip-path: inset(0 0 0 50%); }
+  /* quick shake */
+  68%  { clip-path: inset(0 0 0 calc(50% + 8px)); }
+  70%  { clip-path: inset(0 0 0 calc(50% - 8px)); }
+  72%  { clip-path: inset(0 0 0 calc(50% + 6px)); }
+  74%  { clip-path: inset(0 0 0 calc(50% - 6px)); }
+  76%  { clip-path: inset(0 0 0 calc(50% + 3px)); }
+  78%  { clip-path: inset(0 0 0 calc(50% - 3px)); }
+  80%  { clip-path: inset(0 0 0 50%); }
+  100% { clip-path: inset(0 0 0 50%); }
+}
 .ba-handle.hinting {
   animation: ba-hint-nudge 4s ease-in-out infinite;
+}
+.ba-with.hinting {
+  animation: ba-hint-wipe 4s ease-in-out infinite;
 }
 .ba-handle.hinting .ba-handle-icon {
   cursor: col-resize;
@@ -1790,7 +1808,7 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
   opacity: 0.78;
 }
 .adu-advantages li::before {
-  content: '—';
+  content: '-';
   position: absolute;
   left: 0;
   color: var(--cognac);
@@ -1803,7 +1821,7 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
 }
 
 /* ============================================================
-   ITEM 14 — Team page styles
+   ITEM 14 - Team page styles
    ============================================================ */
 .team-grid {
   display: grid;
@@ -1812,3 +1830,34 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
   margin-top: 60px;
 }
 
+/* ============================================================
+   ADMIN PANEL TABS
+   ============================================================ */
+.admin-tab-btn {
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.5;
+  padding: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--body);
+}
+.admin-tab-btn:hover {
+  opacity: 0.8;
+}
+.admin-tab-btn.active {
+  opacity: 1;
+}
+.admin-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--white);
+}

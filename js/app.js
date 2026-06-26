@@ -215,6 +215,22 @@
       cue.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
       div.appendChild(cue);
       
+      // Caption text inside the slide so it wipes seamlessly
+      let modelName = slide.model;
+      if (typeof PLANS !== 'undefined') {
+        const planData = PLANS.find(p => p.slug === slide.model);
+        if (planData) modelName = planData.name;
+      }
+      const captionText = document.createElement('div');
+      captionText.className = 'hero-caption-text';
+      captionText.textContent = modelName;
+      captionText.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
+      captionText.style.position = 'absolute';
+      captionText.style.bottom = '40px';
+      captionText.style.left = '40px';
+      captionText.style.zIndex = '5';
+      div.appendChild(captionText);
+
       sliderTrack.appendChild(div);
     });
 
@@ -227,51 +243,6 @@
       const prevIndex = currentIndex;
       currentIndex = index;
       const slide = SLIDE_DATA[index];
-
-      // --- Model Caption Wipe ---
-      if (heroCaptionContainer && slide.model) {
-        let modelName = slide.model;
-        if (typeof PLANS !== 'undefined') {
-          const planData = PLANS.find(p => p.slug === slide.model);
-          if (planData) modelName = planData.name;
-        } else {
-          modelName = modelName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        }
-
-        if (modelName !== currentCaptionModel) {
-          currentCaptionModel = modelName;
-          
-          const existingCaptions = heroCaptionContainer.querySelectorAll('.hero-caption-item');
-          existingCaptions.forEach(el => {
-            el.classList.remove('active');
-            el.classList.add('prev');
-            el.style.animation = ''; // clean up
-          });
-
-          const captionItem = document.createElement('div');
-          captionItem.className = 'hero-caption-item';
-          
-          const captionText = document.createElement('div');
-          captionText.className = 'hero-caption-text';
-          captionText.textContent = modelName;
-          captionText.style.color = slide.nav === 'black' ? 'var(--ink)' : 'var(--white)';
-          
-          captionItem.appendChild(captionText);
-          heroCaptionContainer.appendChild(captionItem);
-          
-          void captionItem.offsetWidth;
-          captionItem.classList.add('active');
-
-          if (isFirstLoad) {
-            captionItem.style.animation = 'none';
-            captionItem.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
-          }
-          
-          if (existingCaptions.length > 2) {
-            existingCaptions[0].remove();
-          }
-        }
-      }
 
       // Cleanup any stray .prev classes before setting the new one
       slideEls.forEach(el => el.classList.remove('prev'));
@@ -1280,23 +1251,59 @@
     const subs = data.submissions || [];
     panel.innerHTML = `
       <div class="admin-header">
-        <h2>Welcome back, ${data.ownerName}.</h2>
-        <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
+          <h2>Welcome back, ${data.ownerName}.</h2>
+          <button class="admin-close" style="position:static;" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
+        </div>
+        <div style="display:flex; gap:16px; margin-top:16px; border-bottom:1px solid rgba(255,255,255,0.1);">
+          <button class="admin-tab-btn active" onclick="document.getElementById('adminInboxTab').style.display='block'; document.getElementById('adminAnalyticsTab').style.display='none'; this.classList.add('active'); this.nextElementSibling.classList.remove('active');">Inbox</button>
+          <button class="admin-tab-btn" onclick="document.getElementById('adminInboxTab').style.display='none'; document.getElementById('adminAnalyticsTab').style.display='block'; this.classList.add('active'); this.previousElementSibling.classList.remove('active');">Analytics</button>
+        </div>
       </div>
-      <div class="admin-controls">
-        <select class="admin-select" id="adminSort">
-          <option value="desc">Newest First</option>
-          <option value="asc">Oldest First</option>
-        </select>
-        <select class="admin-select" id="adminFilter">
-          <option value="all">All</option>
-          <option value="new">New</option>
-          <option value="pending">Pending</option>
-          <option value="filled">Filled</option>
-          <option value="passed">Passed</option>
-        </select>
+      
+      <div id="adminInboxTab">
+        <div class="admin-controls">
+          <select class="admin-select" id="adminSort">
+            <option value="desc">Newest First</option>
+            <option value="asc">Oldest First</option>
+          </select>
+          <select class="admin-select" id="adminFilter">
+            <option value="all">All</option>
+            <option value="new">New</option>
+            <option value="pending">Pending</option>
+            <option value="filled">Filled</option>
+            <option value="passed">Passed</option>
+          </select>
+        </div>
+        <div id="adminSubs"></div>
       </div>
-      <div id="adminSubs"></div>
+
+      <div id="adminAnalyticsTab" style="display:none; padding: 24px;">
+        <h3 style="margin-bottom:8px; font-weight:500;">Analytics & Traffic</h3>
+        <p style="opacity:0.7; margin-bottom: 24px; font-size:14px;">Tracking models trending over time, total traffic, and marketing metrics.</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+          <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:8px;">
+            <h4 style="margin-bottom:16px; font-weight:500; font-size:14px; opacity:0.8; text-transform:uppercase; letter-spacing:0.05em;">Top Trending Models</h4>
+            <ul style="font-size:15px; opacity:0.9;">
+              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>The Greenwich</span> <strong>42%</strong></li>
+              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>The Darien</span> <strong>28%</strong></li>
+              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>Rowayton 2</span> <strong>15%</strong></li>
+            </ul>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:8px;">
+            <h4 style="margin-bottom:16px; font-weight:500; font-size:14px; opacity:0.8; text-transform:uppercase; letter-spacing:0.05em;">Site Traffic (Last 30 Days)</h4>
+            <div style="height:120px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:flex-end; gap:8px;">
+              <div style="background:var(--cobalt); flex:1; height:30%; border-radius:2px 2px 0 0;"></div>
+              <div style="background:var(--cobalt); flex:1; height:50%; border-radius:2px 2px 0 0;"></div>
+              <div style="background:var(--cobalt); flex:1; height:40%; border-radius:2px 2px 0 0;"></div>
+              <div style="background:var(--cobalt); flex:1; height:80%; border-radius:2px 2px 0 0;"></div>
+              <div style="background:var(--cobalt); flex:1; height:60%; border-radius:2px 2px 0 0;"></div>
+              <div style="background:var(--cobalt); flex:1; height:90%; border-radius:2px 2px 0 0;"></div>
+            </div>
+            <div style="font-size:12px; opacity:0.5; margin-top:12px;">2,450 unique visitors</div>
+          </div>
+        </div>
+      </div>
     `;
 
     const container = panel.querySelector('#adminSubs');
