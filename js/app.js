@@ -345,14 +345,62 @@
 
   if (slider) {
     let baHintStopped = false;
-    // Add hint class initially
+
+    // rAF-driven hint: drives setSlider() directly so image + handle move together
+    let hintRaf = null;
+    let hintStart = null;
+    const sliderRect = slider.getBoundingClientRect();
+
+    function hintTick(ts) {
+      if (baHintStopped) return;
+      if (!hintStart) hintStart = ts;
+      const elapsed = (ts - hintStart) / 1000; // seconds
+      const cycle = elapsed % 4; // 4-second loop
+
+      let offset = 0;
+      if (cycle < 0.4) {
+        // swing left
+        offset = -Math.sin((cycle / 0.4) * Math.PI) * 0.18;
+      } else if (cycle < 0.8) {
+        // swing right
+        offset = Math.sin(((cycle - 0.4) / 0.4) * Math.PI) * 0.14;
+      } else if (cycle < 1.1) {
+        // settle
+        offset = -Math.sin(((cycle - 0.8) / 0.3) * Math.PI) * 0.06;
+      } else if (cycle < 2.5) {
+        // rest at 0.5
+        offset = 0;
+      } else if (cycle < 2.6) {
+        offset = -0.05 * Math.sin(((cycle - 2.5) / 0.1) * Math.PI);
+      } else if (cycle < 2.7) {
+        offset = 0.05 * Math.sin(((cycle - 2.6) / 0.1) * Math.PI);
+      } else if (cycle < 2.8) {
+        offset = -0.04 * Math.sin(((cycle - 2.7) / 0.1) * Math.PI);
+      } else if (cycle < 2.9) {
+        offset = 0.04 * Math.sin(((cycle - 2.8) / 0.1) * Math.PI);
+      } else {
+        offset = 0;
+      }
+
+      const rect = slider.getBoundingClientRect();
+      const centerX = rect.left + rect.width * (0.5 + offset);
+      setSlider(centerX);
+      hintRaf = requestAnimationFrame(hintTick);
+    }
+
+    hintRaf = requestAnimationFrame(hintTick);
+
+    // Show HOLD label on handle
     if (baHandle) baHandle.classList.add('hinting');
 
     function stopHint() {
-      if (!baHintStopped && baHandle) {
+      if (!baHintStopped) {
         baHintStopped = true;
-        baHandle.classList.remove('hinting');
-        baHandle.style.animation = 'none';
+        if (hintRaf) cancelAnimationFrame(hintRaf);
+        if (baHandle) {
+          baHandle.classList.remove('hinting');
+          baHandle.style.animation = 'none';
+        }
       }
     }
 
@@ -1251,16 +1299,16 @@
     const subs = data.submissions || [];
     panel.innerHTML = `
       <div class="admin-header">
-        <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
-          <h2>Welcome back, ${data.ownerName}.</h2>
-          <button class="admin-close" style="position:static;" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <h2>welcome back, ${data.ownerName}.</h2>
+          <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
         </div>
-        <div style="display:flex; gap:16px; margin-top:16px; border-bottom:1px solid rgba(255,255,255,0.1);">
-          <button class="admin-tab-btn active" onclick="document.getElementById('adminInboxTab').style.display='block'; document.getElementById('adminAnalyticsTab').style.display='none'; this.classList.add('active'); this.nextElementSibling.classList.remove('active');">Inbox</button>
-          <button class="admin-tab-btn" onclick="document.getElementById('adminInboxTab').style.display='none'; document.getElementById('adminAnalyticsTab').style.display='block'; this.classList.add('active'); this.previousElementSibling.classList.remove('active');">Analytics</button>
+        <div style="display:flex; gap:24px; margin-top:16px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0;">
+          <button class="admin-tab-btn active" id="tabInboxBtn" onclick="switchAdminTab('inbox')">Inbox</button>
+          <button class="admin-tab-btn" id="tabAnalyticsBtn" onclick="switchAdminTab('analytics')">Analytics</button>
         </div>
       </div>
-      
+
       <div id="adminInboxTab">
         <div class="admin-controls">
           <select class="admin-select" id="adminSort">
@@ -1276,39 +1324,455 @@
           </select>
         </div>
         <div id="adminSubs"></div>
+        <div id="adminEmptyState" style="display:none; border:1px dashed rgba(255,255,255,0.15); border-radius:6px; padding:48px; text-align:center; margin-top:24px;">
+          <div style="font-size:28px; margin-bottom:12px; opacity:0.3;">📬</div>
+          <div style="font-size:14px; opacity:0.5; font-family:'Menlo',monospace; letter-spacing:0.05em;">Requests will appear here</div>
+          <div style="font-size:12px; opacity:0.3; margin-top:6px;">When someone fills out the contact form, it shows up here.</div>
+        </div>
       </div>
 
-      <div id="adminAnalyticsTab" style="display:none; padding: 24px;">
-        <h3 style="margin-bottom:8px; font-weight:500;">Analytics & Traffic</h3>
-        <p style="opacity:0.7; margin-bottom: 24px; font-size:14px;">Tracking models trending over time, total traffic, and marketing metrics.</p>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
-          <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:8px;">
-            <h4 style="margin-bottom:16px; font-weight:500; font-size:14px; opacity:0.8; text-transform:uppercase; letter-spacing:0.05em;">Top Trending Models</h4>
-            <ul style="font-size:15px; opacity:0.9;">
-              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>The Greenwich</span> <strong>42%</strong></li>
-              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>The Darien</span> <strong>28%</strong></li>
-              <li style="margin-bottom:12px; display:flex; justify-content:space-between;"><span>Rowayton 2</span> <strong>15%</strong></li>
-            </ul>
-          </div>
-          <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:8px;">
-            <h4 style="margin-bottom:16px; font-weight:500; font-size:14px; opacity:0.8; text-transform:uppercase; letter-spacing:0.05em;">Site Traffic (Last 30 Days)</h4>
-            <div style="height:120px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:flex-end; gap:8px;">
-              <div style="background:var(--cobalt); flex:1; height:30%; border-radius:2px 2px 0 0;"></div>
-              <div style="background:var(--cobalt); flex:1; height:50%; border-radius:2px 2px 0 0;"></div>
-              <div style="background:var(--cobalt); flex:1; height:40%; border-radius:2px 2px 0 0;"></div>
-              <div style="background:var(--cobalt); flex:1; height:80%; border-radius:2px 2px 0 0;"></div>
-              <div style="background:var(--cobalt); flex:1; height:60%; border-radius:2px 2px 0 0;"></div>
-              <div style="background:var(--cobalt); flex:1; height:90%; border-radius:2px 2px 0 0;"></div>
+      <div id="adminAnalyticsTab" style="display:none; padding:24px 0;">
+        <!-- KPI row -->
+        <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom:32px;">
+          <div class="a-kpi-card" id="akpi0"><div class="a-kpi-label">Total Visitors</div><div class="a-kpi-val" id="akpiV0">0</div><div class="a-kpi-delta positive">+12% vs last month</div></div>
+          <div class="a-kpi-card" id="akpi1"><div class="a-kpi-label">Contact Requests</div><div class="a-kpi-val" id="akpiV1">0</div><div class="a-kpi-delta positive">+8% vs last month</div></div>
+          <div class="a-kpi-card" id="akpi2"><div class="a-kpi-label">Most Viewed Model</div><div class="a-kpi-val" style="font-size:18px;" id="akpiV2">--</div><div class="a-kpi-delta neutral">42% of plan views</div></div>
+          <div class="a-kpi-card" id="akpi3"><div class="a-kpi-label">Avg. Session (min)</div><div class="a-kpi-val" id="akpiV3">0</div><div class="a-kpi-delta positive">+22 sec vs last month</div></div>
+        </div>
+
+        <!-- Charts row -->
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:20px;">
+          <!-- Traffic over time -->
+          <div class="a-chart-card">
+            <div class="a-chart-header">
+              <div>
+                <div class="a-chart-title">Site Traffic</div>
+                <div class="a-chart-sub">Unique visitors over time</div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="a-period-btn active" onclick="setTrafficPeriod('7d',this)">7D</button>
+                <button class="a-period-btn" onclick="setTrafficPeriod('30d',this)">30D</button>
+                <button class="a-period-btn" onclick="setTrafficPeriod('90d',this)">90D</button>
+              </div>
             </div>
-            <div style="font-size:12px; opacity:0.5; margin-top:12px;">2,450 unique visitors</div>
+            <canvas id="trafficChart" height="180"></canvas>
+            <div id="trafficTooltip" class="a-tooltip" style="display:none;"></div>
+          </div>
+          <!-- Model preference donut -->
+          <div class="a-chart-card">
+            <div class="a-chart-header">
+              <div>
+                <div class="a-chart-title">Model Preference</div>
+                <div class="a-chart-sub">Plan page views</div>
+              </div>
+            </div>
+            <canvas id="donutChart" height="180"></canvas>
+            <div id="donutLegend" style="margin-top:12px; font-size:12px;"></div>
+          </div>
+        </div>
+
+        <!-- Row 2: conversion funnel + source breakdown -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <!-- Conversion funnel -->
+          <div class="a-chart-card">
+            <div class="a-chart-header">
+              <div>
+                <div class="a-chart-title">Conversion Funnel</div>
+                <div class="a-chart-sub">Visitors to submissions</div>
+              </div>
+            </div>
+            <canvas id="funnelChart" height="160"></canvas>
+          </div>
+          <!-- Traffic sources bar -->
+          <div class="a-chart-card">
+            <div class="a-chart-header">
+              <div>
+                <div class="a-chart-title">Traffic Sources</div>
+                <div class="a-chart-sub">Where visitors come from</div>
+              </div>
+            </div>
+            <canvas id="sourceChart" height="160"></canvas>
           </div>
         </div>
       </div>
     `;
 
+    window.switchAdminTab = function(tab) {
+      document.getElementById('adminInboxTab').style.display = tab === 'inbox' ? 'block' : 'none';
+      document.getElementById('adminAnalyticsTab').style.display = tab === 'analytics' ? 'block' : 'none';
+      document.getElementById('tabInboxBtn').classList.toggle('active', tab === 'inbox');
+      document.getElementById('tabAnalyticsBtn').classList.toggle('active', tab === 'analytics');
+      if (tab === 'analytics') initAnalyticsCharts();
+    };
+
+    // ---- Analytics Charts ----
+    function animateCount(el, target, suffix, duration, decimals) {
+      let start = 0; const step = target / (duration / 16);
+      const tick = () => {
+        start = Math.min(start + step, target);
+        el.textContent = decimals ? start.toFixed(decimals) + (suffix||'') : Math.floor(start) + (suffix||'');
+        if (start < target) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    function initAnalyticsCharts() {
+      // Animate KPIs
+      animateCount(document.getElementById('akpiV0'), 2847, '', 1200);
+      animateCount(document.getElementById('akpiV1'), subs.length || 14, '', 1200);
+      document.getElementById('akpiV2').textContent = 'The Greenwich';
+      animateCount(document.getElementById('akpiV3'), 3.4, ' min', 1200, 1);
+
+      const cobalt = '#1a3a6b';
+      const cobaltLight = '#2a5faa';
+      const pink = '#d4a0a0';
+      const gold = '#c8a96e';
+
+      // ---- Traffic Line Chart ----
+      const trafficCanvas = document.getElementById('trafficChart');
+      if (!trafficCanvas) return;
+      const trafficCtx = trafficCanvas.getContext('2d');
+      trafficCanvas.width = trafficCanvas.offsetWidth;
+
+      const allData = {
+        '7d':  { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], values: [42,67,55,89,120,98,143] },
+        '30d': { labels: Array.from({length:30},(_,i)=>'Day '+(i+1)), values: Array.from({length:30},()=>Math.floor(30+Math.random()*120)) },
+        '90d': { labels: Array.from({length:12},(_,i)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]), values: [310,480,520,690,750,820,640,710,890,960,1100,980] }
+      };
+      let currentPeriod = '7d';
+
+      function drawTrafficChart(periodKey, progress) {
+        const { labels, values } = allData[periodKey];
+        const W = trafficCanvas.width, H = trafficCanvas.height;
+        trafficCtx.clearRect(0,0,W,H);
+
+        const pad = { t:20, r:20, b:40, l:50 };
+        const cw = W - pad.l - pad.r;
+        const ch = H - pad.t - pad.b;
+        const maxV = Math.max(...values) * 1.1;
+        const pts = values.map((v,i) => ({
+          x: pad.l + (i/(values.length-1)) * cw,
+          y: pad.t + ch - (v / maxV) * ch * progress
+        }));
+
+        // Grid lines
+        trafficCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+        trafficCtx.lineWidth = 1;
+        [0.25,0.5,0.75,1].forEach(f => {
+          const y = pad.t + ch * (1-f);
+          trafficCtx.beginPath(); trafficCtx.moveTo(pad.l,y); trafficCtx.lineTo(W-pad.r,y); trafficCtx.stroke();
+          trafficCtx.fillStyle = 'rgba(255,255,255,0.3)';
+          trafficCtx.font = '10px Inter,sans-serif';
+          trafficCtx.fillText(Math.floor(maxV*f), 4, y+4);
+        });
+
+        // Area fill
+        const grad = trafficCtx.createLinearGradient(0,pad.t,0,pad.t+ch);
+        grad.addColorStop(0,'rgba(42,95,170,0.5)');
+        grad.addColorStop(1,'rgba(42,95,170,0.02)');
+        trafficCtx.beginPath();
+        trafficCtx.moveTo(pts[0].x, pad.t+ch);
+        pts.forEach(p => trafficCtx.lineTo(p.x, p.y));
+        trafficCtx.lineTo(pts[pts.length-1].x, pad.t+ch);
+        trafficCtx.closePath();
+        trafficCtx.fillStyle = grad;
+        trafficCtx.fill();
+
+        // Line
+        trafficCtx.beginPath();
+        trafficCtx.moveTo(pts[0].x, pts[0].y);
+        pts.forEach(p => trafficCtx.lineTo(p.x, p.y));
+        trafficCtx.strokeStyle = cobaltLight;
+        trafficCtx.lineWidth = 2.5;
+        trafficCtx.lineJoin = 'round';
+        trafficCtx.stroke();
+
+        // Dots
+        pts.forEach(p => {
+          trafficCtx.beginPath();
+          trafficCtx.arc(p.x, p.y, 4, 0, Math.PI*2);
+          trafficCtx.fillStyle = cobaltLight;
+          trafficCtx.fill();
+          trafficCtx.strokeStyle = '#0a0a0a';
+          trafficCtx.lineWidth = 2;
+          trafficCtx.stroke();
+        });
+
+        // X labels (sparse)
+        trafficCtx.fillStyle = 'rgba(255,255,255,0.4)';
+        trafficCtx.font = '10px Inter,sans-serif';
+        trafficCtx.textAlign = 'center';
+        const step = Math.max(1, Math.floor(labels.length / 7));
+        labels.forEach((l,i) => {
+          if (i % step === 0) trafficCtx.fillText(l, pts[i].x, H-6);
+        });
+
+        return pts;
+      }
+
+      let trafficPts = [];
+      let trafficAnim = null;
+      function animateTraffic(periodKey) {
+        if(trafficAnim) cancelAnimationFrame(trafficAnim);
+        let start = null;
+        function frame(ts) {
+          if(!start) start = ts;
+          const p = Math.min((ts-start)/600, 1);
+          trafficPts = drawTrafficChart(periodKey, p);
+          if(p<1) trafficAnim = requestAnimationFrame(frame);
+        }
+        trafficAnim = requestAnimationFrame(frame);
+      }
+      animateTraffic('7d');
+
+      // Hover tooltip on traffic chart
+      const trafficTooltip = document.getElementById('trafficTooltip');
+      trafficCanvas.addEventListener('mousemove', e => {
+        const rect = trafficCanvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const scaleX = trafficCanvas.width / rect.width;
+        const mxS = mx * scaleX;
+        let closest = null, closestDist = Infinity;
+        trafficPts.forEach((p,i) => {
+          const d = Math.abs(p.x - mxS);
+          if(d < closestDist) { closestDist = d; closest = i; }
+        });
+        if(closest !== null && closestDist < 40) {
+          const d = allData[currentPeriod];
+          trafficTooltip.style.display = 'block';
+          trafficTooltip.style.left = (mx + 8) + 'px';
+          trafficTooltip.style.top = (my - 36) + 'px';
+          trafficTooltip.innerHTML = '<strong>' + d.labels[closest] + '</strong>: ' + d.values[closest] + ' visitors';
+        } else {
+          trafficTooltip.style.display = 'none';
+        }
+      });
+      trafficCanvas.addEventListener('mouseleave', () => trafficTooltip.style.display = 'none');
+
+      window.setTrafficPeriod = function(period, btn) {
+        currentPeriod = period;
+        document.querySelectorAll('.a-period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        animateTraffic(period);
+      };
+
+      // ---- Donut Chart ----
+      const donutCanvas = document.getElementById('donutChart');
+      const donutCtx = donutCanvas.getContext('2d');
+      donutCanvas.width = donutCanvas.offsetWidth;
+      const donutData = [
+        { label:'The Greenwich', value:42, color:'#2a5faa' },
+        { label:'The Darien',    value:28, color:'#7b9ed9' },
+        { label:'Rowayton 2',    value:15, color:'#c8a96e' },
+        { label:'The Westport',  value:10, color:'#d4a0a0' },
+        { label:'Other',         value:5,  color:'rgba(255,255,255,0.15)' }
+      ];
+      const total = donutData.reduce((a,d) => a+d.value, 0);
+      let donutHover = -1;
+
+      function drawDonut(progress, hoverIdx) {
+        const W = donutCanvas.width, H = donutCanvas.height;
+        donutCtx.clearRect(0,0,W,H);
+        const cx = W/2, cy = H/2 - 10;
+        const outerR = Math.min(cx,cy) - 8;
+        const innerR = outerR * 0.58;
+        let angle = -Math.PI / 2;
+        donutData.forEach((d,i) => {
+          const sweep = (d.value / total) * Math.PI * 2 * progress;
+          const isHover = i === hoverIdx;
+          const r = isHover ? outerR + 8 : outerR;
+          donutCtx.beginPath();
+          donutCtx.moveTo(cx, cy);
+          donutCtx.arc(cx, cy, r, angle, angle+sweep);
+          donutCtx.closePath();
+          donutCtx.fillStyle = d.color;
+          donutCtx.fill();
+          if(isHover) {
+            donutCtx.strokeStyle = 'rgba(255,255,255,0.3)';
+            donutCtx.lineWidth = 2;
+            donutCtx.stroke();
+          }
+          angle += sweep;
+        });
+        // Inner hole
+        donutCtx.beginPath();
+        donutCtx.arc(cx, cy, innerR, 0, Math.PI*2);
+        donutCtx.fillStyle = '#0a0a0a';
+        donutCtx.fill();
+        // Center label
+        if(hoverIdx >= 0) {
+          donutCtx.fillStyle = '#fff';
+          donutCtx.font = 'bold 20px Inter,sans-serif';
+          donutCtx.textAlign = 'center';
+          donutCtx.fillText(donutData[hoverIdx].value + '%', cx, cy+2);
+          donutCtx.font = '10px Inter,sans-serif';
+          donutCtx.fillStyle = 'rgba(255,255,255,0.5)';
+          donutCtx.fillText(donutData[hoverIdx].label, cx, cy+16);
+        }
+      }
+
+      let donutAnim = null;
+      function animateDonut() {
+        if(donutAnim) cancelAnimationFrame(donutAnim);
+        let start = null;
+        function frame(ts) {
+          if(!start) start = ts;
+          const p = Math.min((ts-start)/800, 1);
+          drawDonut(p, donutHover);
+          if(p<1) donutAnim = requestAnimationFrame(frame);
+        }
+        donutAnim = requestAnimationFrame(frame);
+      }
+      animateDonut();
+
+      // Donut hover
+      donutCanvas.addEventListener('mousemove', e => {
+        const rect = donutCanvas.getBoundingClientRect();
+        const mx = (e.clientX-rect.left) * (donutCanvas.width/rect.width);
+        const my = (e.clientY-rect.top) * (donutCanvas.height/rect.height);
+        const cx = donutCanvas.width/2, cy = donutCanvas.height/2-10;
+        const dx = mx-cx, dy = my-cy;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        const outerR = Math.min(cx,cy)-8;
+        const innerR = outerR*0.58;
+        if(dist > innerR && dist < outerR+16) {
+          let angle = Math.atan2(dy,dx) + Math.PI/2;
+          if(angle<0) angle += Math.PI*2;
+          let cum = 0; let found = -1;
+          donutData.forEach((d,i) => {
+            const sweep = (d.value/total)*Math.PI*2;
+            if(angle >= cum && angle < cum+sweep) found = i;
+            cum += sweep;
+          });
+          if(found !== donutHover) { donutHover = found; drawDonut(1, donutHover); }
+        } else {
+          if(donutHover !== -1) { donutHover = -1; drawDonut(1, -1); }
+        }
+      });
+      donutCanvas.addEventListener('mouseleave', () => { donutHover=-1; drawDonut(1,-1); });
+
+      // Legend
+      const legend = document.getElementById('donutLegend');
+      legend.innerHTML = donutData.map(d =>
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">' +
+        '<div style="width:10px;height:10px;border-radius:2px;background:'+d.color+';flex-shrink:0;"></div>' +
+        '<span style="opacity:0.7;">' + d.label + '</span>' +
+        '<span style="margin-left:auto;opacity:0.9;">' + d.value + '%</span></div>'
+      ).join('');
+
+      // ---- Funnel Chart ----
+      const funnelCanvas = document.getElementById('funnelChart');
+      const funnelCtx = funnelCanvas.getContext('2d');
+      funnelCanvas.width = funnelCanvas.offsetWidth;
+      const funnelStages = [
+        { label:'Site Visits', value:2847, color:cobaltLight },
+        { label:'Plans Viewed', value:1420, color:'#4a7fc0' },
+        { label:'Contact Click', value:284, color:gold },
+        { label:'Submitted', value: Math.max(subs.length||14, 14), color:'#7ecb8a' }
+      ];
+
+      function drawFunnel(progress) {
+        const W = funnelCanvas.width, H = funnelCanvas.height;
+        funnelCtx.clearRect(0,0,W,H);
+        const pad = {t:10,r:20,b:10,l:20};
+        const rowH = (H-pad.t-pad.b) / funnelStages.length - 6;
+        const maxW = W - pad.l - pad.r;
+        const maxV = funnelStages[0].value;
+        funnelStages.forEach((s,i) => {
+          const barW = (s.value/maxV) * maxW * progress;
+          const x = pad.l + (maxW - barW)/2;
+          const y = pad.t + i*(rowH+6);
+          funnelCtx.fillStyle = s.color;
+          const r = 4;
+          funnelCtx.beginPath();
+          funnelCtx.roundRect(x,y,barW,rowH,r);
+          funnelCtx.fill();
+          // Label
+          funnelCtx.fillStyle='rgba(255,255,255,0.9)';
+          funnelCtx.font='bold 12px Inter,sans-serif';
+          funnelCtx.textAlign='left';
+          funnelCtx.fillText(s.label, pad.l, y+rowH/2+4);
+          funnelCtx.textAlign='right';
+          funnelCtx.fillText(s.value.toLocaleString(), W-pad.r, y+rowH/2+4);
+        });
+      }
+      let funnelAnim=null;
+      function animateFunnel() {
+        if(funnelAnim) cancelAnimationFrame(funnelAnim);
+        let start=null;
+        function frame(ts){
+          if(!start)start=ts;
+          const p=Math.min((ts-start)/700,1);
+          drawFunnel(p);
+          if(p<1)funnelAnim=requestAnimationFrame(frame);
+        }
+        funnelAnim=requestAnimationFrame(frame);
+      }
+      animateFunnel();
+
+      // ---- Source Bar Chart ----
+      const sourceCanvas = document.getElementById('sourceChart');
+      const sourceCtx = sourceCanvas.getContext('2d');
+      sourceCanvas.width = sourceCanvas.offsetWidth;
+      const sourceData = [
+        { label:'Direct', value:38, color:cobaltLight },
+        { label:'Google', value:29, color:'#4a7fc0' },
+        { label:'Referral', value:18, color:gold },
+        { label:'Social', value:10, color:pink },
+        { label:'Email', value:5,  color:'rgba(255,255,255,0.3)' }
+      ];
+
+      function drawSource(progress) {
+        const W = sourceCanvas.width, H = sourceCanvas.height;
+        sourceCtx.clearRect(0,0,W,H);
+        const pad={t:10,r:20,b:30,l:20};
+        const bw = (W-pad.l-pad.r)/sourceData.length - 10;
+        const ch = H-pad.t-pad.b;
+        const mx = Math.max(...sourceData.map(d=>d.value));
+        sourceData.forEach((d,i) => {
+          const bh = (d.value/mx)*ch*progress;
+          const x = pad.l + i*(bw+10);
+          const y = pad.t+ch-bh;
+          sourceCtx.fillStyle=d.color;
+          sourceCtx.beginPath();
+          sourceCtx.roundRect(x,y,bw,bh,4);
+          sourceCtx.fill();
+          // value label
+          sourceCtx.fillStyle='rgba(255,255,255,0.9)';
+          sourceCtx.font='bold 11px Inter,sans-serif';
+          sourceCtx.textAlign='center';
+          sourceCtx.fillText(d.value+'%', x+bw/2, y-4);
+          // X label
+          sourceCtx.fillStyle='rgba(255,255,255,0.45)';
+          sourceCtx.font='10px Inter,sans-serif';
+          sourceCtx.fillText(d.label, x+bw/2, H-4);
+        });
+      }
+      let sourceAnim=null;
+      function animateSource(){
+        if(sourceAnim)cancelAnimationFrame(sourceAnim);
+        let start=null;
+        function frame(ts){
+          if(!start)start=ts;
+          const p=Math.min((ts-start)/700,1);
+          drawSource(p);
+          if(p<1)sourceAnim=requestAnimationFrame(frame);
+        }
+        sourceAnim=requestAnimationFrame(frame);
+      }
+      animateSource();
+    }
+
     const container = panel.querySelector('#adminSubs');
-    
+
     function renderList(list) {
+      if (!list || list.length === 0) {
+        container.innerHTML = '';
+        document.getElementById('adminEmptyState').style.display = 'block';
+        return;
+      }
+      document.getElementById('adminEmptyState').style.display = 'none';
       container.innerHTML = list.map(sub => `
         <div class="submission-card ${!sub.opened ? 'unread' : ''}">
           <div class="sub-meta">${new Date(sub.submittedAt).toLocaleString([], {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'})} &middot; from ${sub.sourcePage}</div>
@@ -1333,7 +1797,7 @@
           </div>
         </div>
       `).join('');
-      
+
       container.querySelectorAll('.sub-status, .sub-note, .sub-opened').forEach(el => {
         el.addEventListener('change', async (e) => {
           const id = e.target.getAttribute('data-id');
@@ -1349,7 +1813,7 @@
             if (patch.opened) card.classList.remove('unread');
             else card.classList.add('unread');
           }
-          
+
           await fetch('/api/update', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
@@ -1358,6 +1822,8 @@
         });
       });
     }
+
+
     
     function applyFilters() {
       const sort = panel.querySelector('#adminSort').value;

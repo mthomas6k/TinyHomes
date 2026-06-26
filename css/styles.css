@@ -1677,8 +1677,8 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   opacity: 0.7;
 }
 .brand-phone img {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
 }
 .brand-phone-number {
@@ -1860,4 +1860,135 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
   right: 0;
   height: 2px;
   background: var(--white);
+}
+
+/* ============================================================
+   ANALYTICS DASHBOARD
+   ============================================================ */
+/* Fix admin panel background - needs to be dark not transparent */
+.admin-panel {
+  background: rgba(6, 8, 14, 0.97) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.a-kpi-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+.a-kpi-card:hover {
+  border-color: rgba(255,255,255,0.2);
+}
+.a-kpi-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-bottom: 8px;
+  font-family: 'Menlo', monospace;
+}
+.a-kpi-val {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: 'Menlo', monospace;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.a-kpi-delta {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.a-kpi-delta.positive { color: #7ecb8a; }
+.a-kpi-delta.negative { color: #e07070; }
+.a-kpi-delta.neutral  { color: #c8a96e; }
+
+.a-chart-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: visible;
+}
+.a-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.a-chart-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 3px;
+}
+.a-chart-sub {
+  font-size: 11px;
+  opacity: 0.4;
+  font-family: 'Menlo', monospace;
+}
+.a-chart-card canvas {
+  width: 100%;
+  display: block;
+}
+
+.a-period-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Menlo', monospace;
+  transition: all 0.15s;
+}
+.a-period-btn:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.8);
+}
+.a-period-btn.active {
+  background: rgba(42,95,170,0.6);
+  border-color: #2a5faa;
+  color: #fff;
+}
+
+.a-tooltip {
+  position: absolute;
+  background: rgba(10,10,20,0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: 'Menlo', monospace;
+  color: #fff;
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.admin-close {
+  position: static !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08) !important;
+  border: none !important;
+  color: rgba(255,255,255,0.8) !important;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.admin-close:hover {
+  background: rgba(255,255,255,0.18) !important;
+  opacity: 1 !important;
 }
