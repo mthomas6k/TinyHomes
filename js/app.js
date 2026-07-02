@@ -1298,10 +1298,10 @@
   function renderPanelContents(panel, data, passkey) {
     const subs = data.submissions || [];
     panel.innerHTML = `
-      <div class="admin-header">
-        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+      <div class="admin-header" style="display:block; border-bottom:none; padding-bottom:0;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2>welcome back, ${data.ownerName}.</h2>
-          <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
+          <button class="admin-close" style="position:static; margin-top:-10px; margin-right:-10px;" onclick="document.getElementById('adminPanel').classList.remove('open'); const mc = document.getElementById('matrixCanvas'); if(mc) mc.style.display='none'; if(window.stopMatrix) window.stopMatrix();">&times;</button>
         </div>
         <div style="display:flex; gap:24px; margin-top:16px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0;">
           <button class="admin-tab-btn active" id="tabInboxBtn" onclick="switchAdminTab('inbox')">Inbox</button>

@@ -1701,55 +1701,7 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
   .brand-phone img { width: 36px; height: 36px; }
 }
 
-/* ============================================================
-   ITEM 11 — Before/after slider hint animation
-   ============================================================ */
-@keyframes ba-hint-nudge {
-  0%   { transform: translateX(0); }
-  8%   { transform: translateX(-25px); }
-  16%  { transform: translateX(20px); }
-  24%  { transform: translateX(-15px); }
-  30%  { transform: translateX(10px); }
-  35%  { transform: translateX(-5px); }
-  40%  { transform: translateX(0); }
-  /* rest */
-  65%  { transform: translateX(0); }
-  /* quick shake */
-  68%  { transform: translateX(-8px); }
-  70%  { transform: translateX(8px); }
-  72%  { transform: translateX(-6px); }
-  74%  { transform: translateX(6px); }
-  76%  { transform: translateX(-3px); }
-  78%  { transform: translateX(3px); }
-  80%  { transform: translateX(0); }
-  100% { transform: translateX(0); }
-}
-@keyframes ba-hint-wipe {
-  0%   { clip-path: inset(0 0 0 50%); }
-  8%   { clip-path: inset(0 0 0 calc(50% + 25px)); }
-  16%  { clip-path: inset(0 0 0 calc(50% - 20px)); }
-  24%  { clip-path: inset(0 0 0 calc(50% + 15px)); }
-  30%  { clip-path: inset(0 0 0 calc(50% - 10px)); }
-  35%  { clip-path: inset(0 0 0 calc(50% + 5px)); }
-  40%  { clip-path: inset(0 0 0 50%); }
-  /* rest */
-  65%  { clip-path: inset(0 0 0 50%); }
-  /* quick shake */
-  68%  { clip-path: inset(0 0 0 calc(50% + 8px)); }
-  70%  { clip-path: inset(0 0 0 calc(50% - 8px)); }
-  72%  { clip-path: inset(0 0 0 calc(50% + 6px)); }
-  74%  { clip-path: inset(0 0 0 calc(50% - 6px)); }
-  76%  { clip-path: inset(0 0 0 calc(50% + 3px)); }
-  78%  { clip-path: inset(0 0 0 calc(50% - 3px)); }
-  80%  { clip-path: inset(0 0 0 50%); }
-  100% { clip-path: inset(0 0 0 50%); }
-}
-.ba-handle.hinting {
-  animation: ba-hint-nudge 4s ease-in-out infinite;
-}
-.ba-with.hinting {
-  animation: ba-hint-wipe 4s ease-in-out infinite;
-}
+
 .ba-handle.hinting .ba-handle-icon {
   cursor: col-resize;
 }
