@@ -1257,6 +1257,13 @@ body.shaking {
     transform: translateX(-50%);
   }
   
+  /* Prevent Safari from clipping the fixed overlay menu */
+  .site-header {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(251, 250, 246, 0.98) !important;
+  }
+  
   .site-nav {
     position: fixed;
     top: -100dvh;
@@ -1739,9 +1746,11 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   opacity: 0.7;
 }
 .brand-phone img {
-  width: 160px;
-  height: 160px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
+  transform: scale(2.8);
+  transform-origin: center right;
 }
 .brand-phone-number {
   font-family: var(--body);
@@ -1760,7 +1769,12 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
 @media (max-width: 960px) {
   .brand-phone-number { display: none; }
   .brand-phone { transform: none; }
-  .brand-phone img { width: 110px; height: 110px; }
+  .brand-phone img { 
+    width: 44px; 
+    height: 44px; 
+    transform: scale(2.5);
+    transform-origin: center right;
+  }
 }
 
 
