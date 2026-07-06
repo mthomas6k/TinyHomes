@@ -1243,7 +1243,7 @@ body.shaking {
   .talk-form { grid-template-columns: 1fr; }
   
   .desktop-only { display: none !important; }
-  .nav-toggle { display: flex; }
+  .nav-toggle { display: flex !important; }
   
   .site-nav {
     position: fixed;
@@ -1279,6 +1279,10 @@ body.shaking {
   .section-pad { padding: 60px 0 !important; }
   
   /* Disable Sticky Scroll in Paint Sections */
+  .section-who,
+  .section-who-not {
+    height: auto !important;
+  }
   .section-who .sticky-stage,
   .section-who-not .sticky-stage { 
     position: static; 
@@ -1288,6 +1292,7 @@ body.shaking {
   .section-who-not .sticky-content {
     position: static;
     height: auto !important;
+    padding-bottom: 80px; /* give some bottom padding since it's no longer full height */
   }
   .who-panel {
     position: static;
@@ -1714,8 +1719,8 @@ body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
   opacity: 0.7;
 }
 .brand-phone img {
-  width: 64px;
-  height: 64px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
 }
 .brand-phone-number {
@@ -1735,7 +1740,7 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
 @media (max-width: 960px) {
   .brand-phone-number { display: none; }
   .brand-phone { transform: none; }
-  .brand-phone img { width: 36px; height: 36px; }
+  .brand-phone img { width: 70px; height: 70px; }
 }
 
 

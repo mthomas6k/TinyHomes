@@ -484,13 +484,13 @@
      Used for "Who are we?" (cover beige → reveals navy world)
      and "Who we are NOT" (cover cobalt → reveals pink world).
      ========================================================= */
-  function setupPaintReveal(section, coverSheet, opts) {
-    if (!section || !coverSheet) return;
+  function setupPaintReveal(section, coverSvg, opts) {
+    if (!section || !coverSvg) return;
     
     // Disable on mobile to prevent choppy scrolling
     if (window.innerWidth <= 960) {
       section.classList.add('painted');
-      coverSheet.style.display = 'none';
+      coverSvg.style.display = 'none';
       return;
     }
     
