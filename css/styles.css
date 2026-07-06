@@ -59,8 +59,6 @@ body {
 
 html { 
   scroll-behavior: smooth; 
-  overflow-x: hidden; 
-  width: 100%; 
 }
 
 img { max-width: 100%; display: block; }
@@ -1252,14 +1250,18 @@ body.shaking {
   .talk-form { grid-template-columns: 1fr; }
   
   .desktop-only { display: none !important; }
-  .nav-toggle { display: flex !important; }
+  .nav-toggle { 
+    display: flex !important; 
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   
   .site-nav {
     position: fixed;
-    inset: 0;
-    top: auto;
+    top: -100dvh;
+    left: 0; right: 0;
     height: 100dvh;
-    transform: translateY(-100%);
     background: var(--paper);
     flex-direction: column;
     justify-content: center;
@@ -1267,9 +1269,9 @@ body.shaking {
     padding: 80px 24px;
     gap: 40px;
     z-index: 150;
-    transition: transform 0.4s var(--ease);
+    transition: top 0.4s var(--ease);
   }
-  .site-nav.open { transform: translateY(0); }
+  .site-nav.open { top: 0; }
   
   .nav-link { font-size: 32px; font-weight: 500; }
   
@@ -1307,7 +1309,10 @@ body.shaking {
   .section-who-not .sticky-content {
     position: static;
     height: auto !important;
-    padding-bottom: 80px; /* give some bottom padding since it's no longer full height */
+  }
+  .finished-state {
+    position: static !important;
+    padding: 60px 0;
   }
   .who-panel {
     position: static;
