@@ -1819,9 +1819,9 @@ body.is-home .site-header:not(.scrolled) .brand-phone-number {
    ============================================================ */
 /* Fix admin panel background - needs to be dark not transparent */
 .admin-panel {
-  background: rgba(6, 8, 14, 0.97) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  background: rgba(6, 8, 14, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
 }
 
 .a-kpi-card {
