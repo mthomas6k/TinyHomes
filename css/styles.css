@@ -1244,21 +1244,58 @@ body.shaking {
   
   .desktop-only { display: none !important; }
   .nav-toggle { display: flex; }
+  
   .site-nav {
     position: fixed;
-    top: -100%;
-    left: 0; right: 0;
-    background: rgba(251, 250, 246, 0.98);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    inset: 0;
+    top: auto;
+    height: 100dvh;
+    transform: translateY(-100%);
+    background: var(--paper);
     flex-direction: column;
-    padding: 100px 24px 40px;
-    gap: 32px;
-    border-bottom: 1px solid var(--line);
-    transition: top 0.4s var(--ease);
+    justify-content: center;
+    align-items: center;
+    padding: 80px 24px;
+    gap: 40px;
+    z-index: 150;
+    transition: transform 0.4s var(--ease);
   }
-  .site-nav.open { top: 0; }
-  .nav-link { font-size: 22px; }
+  .site-nav.open { transform: translateY(0); }
+  
+  .nav-link { font-size: 32px; font-weight: 500; }
+  
+  /* Hide unwanted captions/cues on mobile */
+  .hero-caption-container,
+  .scroll-cue,
+  .drag-cue-top {
+    display: none !important;
+  }
+  
+  /* Typography Scaling */
+  .display-h2 { font-size: clamp(32px, 8vw, 42px); line-height: 1.1; }
+  .lead { font-size: 16px; margin-bottom: 24px; }
+  
+  /* Layout Proportions */
+  .section-pad { padding: 60px 0 !important; }
+  
+  /* Disable Sticky Scroll in Paint Sections */
+  .section-who .sticky-stage,
+  .section-who-not .sticky-stage { 
+    position: static; 
+    height: auto !important; 
+  }
+  .section-who .sticky-content,
+  .section-who-not .sticky-content {
+    position: static;
+    height: auto !important;
+  }
+  .who-panel {
+    position: static;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-bottom: 40px;
+    filter: none !important;
+  }
 }
 @media (max-width: 600px) {
   .plan-grid { grid-template-columns: 1fr; }
