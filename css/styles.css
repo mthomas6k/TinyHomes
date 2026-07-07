@@ -1403,12 +1403,18 @@ body.shaking {
   align-items: center;
   z-index: 150;
 }
-/* Desktop only: centre nav links in the full page width */
+/* Desktop only: pin nav links to the same visual row as the header */
 @media (min-width: 961px) {
   .site-nav {
-    position: absolute;
+    position: fixed;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
+    height: auto;
+    padding: 12px 0; /* matches .site-header padding */
+    align-items: center;
+    z-index: 101; /* just above header */
+    pointer-events: auto;
   }
 }
 .nav-link {
@@ -1421,9 +1427,10 @@ body.shaking {
   transition: color 0.3s var(--ease);
 }
 .nav-link:hover { color: var(--cognac); }
-body.is-home .site-header:not(.scrolled) .nav-link { color: var(--white); }
+/* On the home page at top, nav links and hamburger go white */
+body.is-home .site-header:not(.scrolled) ~ .site-nav .nav-link { color: var(--white); }
 body.is-home .site-header:not(.scrolled) .nav-toggle span { background: var(--white); }
-body.is-home .site-header:not(.scrolled) .nav-link:hover { color: var(--pink); }
+body.is-home .site-header:not(.scrolled) ~ .site-nav .nav-link:hover { color: var(--pink); }
 
 .back-to-top {
   position: fixed;
