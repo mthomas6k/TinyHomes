@@ -33,10 +33,13 @@
   /* ---------- nav toggle ---------- */
   const navToggle = document.getElementById('navToggle');
   const siteNav = document.getElementById('siteNav');
+  const siteHeader = document.getElementById('siteHeader');
   if (navToggle && siteNav) {
     navToggle.addEventListener('click', () => {
       navToggle.classList.toggle('open');
       siteNav.classList.toggle('open');
+      // Keep header opaque while menu is open
+      if (siteHeader) siteHeader.classList.toggle('nav-open', siteNav.classList.contains('open'));
     });
   }
 

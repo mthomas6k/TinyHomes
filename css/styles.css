@@ -122,7 +122,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 24px 0;
+  padding: 12px 0;
   background: rgba(251, 250, 246, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -134,7 +134,7 @@ body.is-home .site-header:not(.scrolled) {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-bottom: none;
-  padding: 32px 0;
+  padding: 16px 0;
 }
 .site-header.scrolled {
   /* No overrides needed if default is already scrolled state */
@@ -146,6 +146,7 @@ body.is-home .site-header:not(.scrolled) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 .brand-name {
   display: flex;
@@ -1242,6 +1243,9 @@ body.shaking {
    RESPONSIVE
    ========================================================= */
 @media (max-width: 960px) {
+  /* Lock horizontal scrolling on mobile only */
+  html, body { overflow-x: hidden; max-width: 100vw; }
+  
   .slider-info { bottom: 60px; }
   .bullet-grid { grid-template-columns: 1fr; }
   .value-row { grid-template-columns: 1fr; gap: 30px; }
@@ -1257,16 +1261,28 @@ body.shaking {
     transform: translateX(-50%);
   }
   
-  /* Prevent Safari from clipping the fixed overlay menu */
-  .site-header {
+  /* On mobile, the header should go transparent at top of page */
+  body.is-home .site-header:not(.scrolled) {
+    background: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    border-bottom: none !important;
+  }
+  body.is-home .site-header.scrolled,
+  .site-header.scrolled {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(251, 250, 246, 0.98);
+  }
+  /* When nav is open, ensure header is visible */
+  .site-header.nav-open {
     background: rgba(251, 250, 246, 0.98) !important;
   }
   
+  /* Full-screen overlay nav */
   .site-nav {
     position: fixed;
-    top: -100dvh;
+    top: 0;
     left: 0; right: 0;
     height: 100dvh;
     background: var(--paper);
@@ -1275,10 +1291,17 @@ body.shaking {
     align-items: center;
     padding: 80px 24px;
     gap: 40px;
-    z-index: 150;
-    transition: top 0.4s var(--ease);
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
   }
-  .site-nav.open { top: 0; }
+  .site-nav.open {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+  }
   
   .nav-link { font-size: 32px; font-weight: 500; }
   
@@ -1296,8 +1319,12 @@ body.shaking {
   }
   
   /* Typography Scaling */
-  .display-h2 { font-size: clamp(32px, 8vw, 42px); line-height: 1.1; }
+  .display-h2 { font-size: clamp(28px, 7vw, 42px); line-height: 1.1; }
   .lead { font-size: 16px; margin-bottom: 24px; }
+  
+  /* Shrink the strike heading so "different" doesn't get cut off */
+  .strike-heading .display-h2 { font-size: clamp(22px, 6vw, 36px); }
+  .marker-label { font-size: clamp(22px, 6vw, 36px); }
   
   /* Layout Proportions */
   .section-pad { padding: 60px 0 !important; }
@@ -1364,6 +1391,10 @@ body.shaking {
   gap: 32px;
   align-items: center;
   z-index: 150;
+  /* Desktop: centre nav links in the full header width */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .nav-link {
   font-family: var(--body);
