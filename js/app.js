@@ -36,19 +36,27 @@
   const navToggle = document.getElementById('navToggle');
   const siteNav = document.getElementById('siteNav');
   const siteHeader = document.getElementById('siteHeader');
+  let scrollPosition = 0; // Track scroll position for iOS lock
+
   if (navToggle && siteNav) {
     navToggle.addEventListener('click', () => {
       const isOpen = siteNav.classList.toggle('open');
       navToggle.classList.toggle('open', isOpen);
-      // Lock body scroll while menu is open
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      // Force header opaque while menu is open; restore normal state when closed
-      if (siteHeader) {
-        if (isOpen) {
-          siteHeader.classList.add('nav-open');
-        } else {
-          siteHeader.classList.remove('nav-open');
-        }
+      
+      if (isOpen) {
+        // Lock body scroll (iOS safe)
+        scrollPosition = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollPosition}px`;
+        document.body.style.width = '100%';
+        if (siteHeader) siteHeader.classList.add('nav-open');
+      } else {
+        // Unlock body scroll
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
+        if (siteHeader) siteHeader.classList.remove('nav-open');
       }
     });
 
@@ -57,7 +65,11 @@
       link.addEventListener('click', () => {
         siteNav.classList.remove('open');
         navToggle.classList.remove('open');
-        document.body.style.overflow = '';
+        // Unlock body scroll
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
         if (siteHeader) siteHeader.classList.remove('nav-open');
       });
     });

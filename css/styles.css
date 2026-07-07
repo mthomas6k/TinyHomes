@@ -166,8 +166,8 @@ body.is-home .site-header:not(.scrolled) {
 .brand-sub {
   display: none;
 }
-body.is-home .site-header:not(.scrolled) .brand-name img,
-body.is-home .site-header:not(.scrolled) .brand-logo img {
+body.is-home .site-header:not(.scrolled):not(.nav-open) .brand-name img,
+body.is-home .site-header:not(.scrolled):not(.nav-open) .brand-logo img {
   filter: brightness(0) invert(1);
 }
 .brand-logo {
@@ -1275,13 +1275,15 @@ body.shaking {
     -webkit-backdrop-filter: none;
     background: rgba(251, 250, 246, 0.98);
   }
-  /* When nav is open: header floats ABOVE the overlay (so X is visible) and stays opaque */
-  .site-header.nav-open {
+  /* When nav is open: header floats ABOVE the overlay (so X is visible) and stays opaque.
+     Use high specificity to beat the transparent-at-top rule. */
+  body .site-header.nav-open,
+  body.is-home .site-header.nav-open {
     background: rgba(251, 250, 246, 0.98) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-bottom: 1px solid var(--line-soft) !important;
-    z-index: 9999999 !important; /* above the nav overlay */
+    z-index: 9999999 !important;
   }
   
   /* Full-screen overlay nav — display:none is the only truly reliable method on iOS Safari */
@@ -1435,10 +1437,10 @@ body.shaking {
   transition: color 0.3s var(--ease);
 }
 .nav-link:hover { color: var(--cognac); }
-/* On the home page at top, nav links and hamburger go white */
-body.is-home .site-header:not(.scrolled) ~ .site-nav .nav-link { color: var(--white); }
-body.is-home .site-header:not(.scrolled) .nav-toggle span { background: var(--white); }
-body.is-home .site-header:not(.scrolled) ~ .site-nav .nav-link:hover { color: var(--pink); }
+/* On the home page at top, nav links and hamburger go white — but NOT when nav is open */
+body.is-home .site-header:not(.scrolled):not(.nav-open) ~ .site-nav .nav-link { color: var(--white); }
+body.is-home .site-header:not(.scrolled):not(.nav-open) .nav-toggle span { background: var(--white); }
+body.is-home .site-header:not(.scrolled):not(.nav-open) ~ .site-nav .nav-link:hover { color: var(--pink); }
 
 .back-to-top {
   position: fixed;
@@ -1821,10 +1823,10 @@ body.is-home .site-header:not(.scrolled) ~ .site-nav .nav-link:hover { color: va
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
-body.is-home .site-header:not(.scrolled) .brand-phone img {
+body.is-home .site-header:not(.scrolled):not(.nav-open) .brand-phone img {
   filter: brightness(0) invert(1);
 }
-body.is-home .site-header:not(.scrolled) .brand-phone-number {
+body.is-home .site-header:not(.scrolled):not(.nav-open) .brand-phone-number {
   color: var(--white);
 }
 /* On mobile, hide the phone text, keep the icon */
