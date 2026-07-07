@@ -15,6 +15,8 @@
       window.requestAnimationFrame(() => {
         const isScrolled = window.scrollY > 20;
         document.querySelectorAll('.site-header').forEach(h => {
+          // Don't change scroll state while mobile nav is open
+          if (h.classList.contains('nav-open')) return;
           if (isScrolled) h.classList.add('scrolled');
           else h.classList.remove('scrolled');
         });
