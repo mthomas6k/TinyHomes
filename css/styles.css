@@ -1280,8 +1280,9 @@ body.shaking {
     background: rgba(251, 250, 246, 0.98) !important;
   }
   
-  /* Full-screen overlay nav */
+  /* Full-screen overlay nav — display:none is the only truly reliable method on iOS Safari */
   .site-nav {
+    display: none !important;
     position: fixed !important;
     inset: 0 !important;
     transform: none !important;
@@ -1294,16 +1295,9 @@ body.shaking {
     padding: 80px 24px;
     gap: 40px;
     z-index: 99999 !important;
-    /* Use visibility + clip-path — Safari-safe alternative to opacity */
-    visibility: hidden;
-    clip-path: inset(0 0 100% 0);
-    transition: clip-path 0.4s var(--ease), visibility 0s linear 0.4s;
   }
   .site-nav.open {
-    visibility: visible;
-    clip-path: inset(0 0 0% 0);
-    pointer-events: auto;
-    transition: clip-path 0.4s var(--ease), visibility 0s linear 0s;
+    display: flex !important;
   }
   
   .nav-link { font-size: 32px; font-weight: 500; }

@@ -36,10 +36,28 @@
   const siteHeader = document.getElementById('siteHeader');
   if (navToggle && siteNav) {
     navToggle.addEventListener('click', () => {
-      navToggle.classList.toggle('open');
-      siteNav.classList.toggle('open');
-      // Keep header opaque while menu is open
-      if (siteHeader) siteHeader.classList.toggle('nav-open', siteNav.classList.contains('open'));
+      const isOpen = siteNav.classList.toggle('open');
+      navToggle.classList.toggle('open', isOpen);
+      // Lock body scroll while menu is open
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+      // Force header opaque while menu is open; restore normal state when closed
+      if (siteHeader) {
+        if (isOpen) {
+          siteHeader.classList.add('nav-open');
+        } else {
+          siteHeader.classList.remove('nav-open');
+        }
+      }
+    });
+
+    // Close menu when a nav link is tapped
+    siteNav.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        siteNav.classList.remove('open');
+        navToggle.classList.remove('open');
+        document.body.style.overflow = '';
+        if (siteHeader) siteHeader.classList.remove('nav-open');
+      });
     });
   }
 
