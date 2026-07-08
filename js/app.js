@@ -16,7 +16,7 @@
         const isScrolled = window.scrollY > 20;
         document.querySelectorAll('.site-header').forEach(h => {
           // Don't change scroll state while mobile nav is open
-          if (h.classList.contains('nav-open')) return;
+          if (document.body.classList.contains('nav-open')) return;
           if (isScrolled) h.classList.add('scrolled');
           else h.classList.remove('scrolled');
         });
@@ -46,17 +46,23 @@
       if (isOpen) {
         // Lock body scroll (iOS safe)
         scrollPosition = window.scrollY;
+        document.body.classList.add('nav-open');
         document.body.style.position = 'fixed';
         document.body.style.top = `-${scrollPosition}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
         document.body.style.width = '100%';
-        if (siteHeader) siteHeader.classList.add('nav-open');
+        document.body.style.overflow = 'hidden';
       } else {
         // Unlock body scroll
+        document.body.classList.remove('nav-open');
         document.body.style.position = '';
         document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
         document.body.style.width = '';
+        document.body.style.overflow = '';
         window.scrollTo(0, scrollPosition);
-        if (siteHeader) siteHeader.classList.remove('nav-open');
       }
     });
 
@@ -66,11 +72,14 @@
         siteNav.classList.remove('open');
         navToggle.classList.remove('open');
         // Unlock body scroll
+        document.body.classList.remove('nav-open');
         document.body.style.position = '';
         document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
         document.body.style.width = '';
+        document.body.style.overflow = '';
         window.scrollTo(0, scrollPosition);
-        if (siteHeader) siteHeader.classList.remove('nav-open');
       });
     });
   }
