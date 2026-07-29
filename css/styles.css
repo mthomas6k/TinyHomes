@@ -59,6 +59,7 @@ body {
 
 html { 
   scroll-behavior: smooth; 
+  background-color: var(--white);
 }
 
 img { max-width: 100%; display: block; }
@@ -1420,11 +1421,15 @@ body.shaking {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: auto;
-    padding: 12px 0; /* matches .site-header padding */
+    height: 79px; /* exactly matches site-header scrolled height */
+    padding: 0;
     align-items: center;
     z-index: 101; /* just above header */
     pointer-events: auto;
+    transition: height 0.3s var(--ease);
+  }
+  body.is-home:not(.scrolled) .site-nav {
+    height: 87px; /* exactly matches home unscrolled header height */
   }
 }
 .nav-link {
