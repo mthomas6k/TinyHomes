@@ -39,7 +39,13 @@
   let scrollPosition = 0; // Track scroll position for iOS lock
 
   if (navToggle && siteNav) {
-    navToggle.addEventListener('click', () => {
+    let navBusy = false; // debounce rapid taps
+
+    function toggleNav() {
+      if (navBusy) return;
+      navBusy = true;
+      setTimeout(() => { navBusy = false; }, 300);
+
       const isOpen = siteNav.classList.toggle('open');
       navToggle.classList.toggle('open', isOpen);
       
@@ -64,6 +70,17 @@
         document.body.style.overflow = '';
         window.scrollTo(0, scrollPosition);
       }
+    }
+
+    // Use touchend on mobile for more reliable taps (iOS Safari)
+    navToggle.addEventListener('touchend', (e) => {
+      e.preventDefault(); // prevents the follow-up 'click' ghost event
+      toggleNav();
+    });
+    navToggle.addEventListener('click', (e) => {
+      // Only fire on non-touch devices (desktop)
+      if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+      toggleNav();
     });
 
     // Close menu when a nav link is tapped
@@ -230,6 +247,12 @@
       header1.style.zIndex = '100';
       header2.style.zIndex = '101';
       header2.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'; // default fully visible
+      
+      // On mobile, the cloned header's nav-toggle button has no click handler
+      // and would block taps on the real hamburger. Disable pointer events on it.
+      if (window.innerWidth <= 960) {
+        header2.style.pointerEvents = 'none';
+      }
       
       if (window.scrollY > 20) {
         header2.classList.add('scrolled');

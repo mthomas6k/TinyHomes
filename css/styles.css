@@ -280,6 +280,13 @@ body.is-home:not(.nav-open) .site-header:not(.scrolled) .brand-logo img {
   background: var(--ink);
 }
 
+/* Subpage spacer: push content below the fixed header.
+   The header visual height is ~134px (55px logo × scale(2) + padding).
+   Using 140px gives a clean flush start with no slit. */
+.subpage-main {
+  padding-top: 140px;
+}
+
 /* --- Slide track & individual slides --- */
 .slider-track {
   position: absolute;
@@ -1261,6 +1268,11 @@ body.shaking {
     left: 50%;
     transform: translateX(-50%);
     z-index: 999999 !important; /* Always above the nav overlay */
+    min-width: 48px;
+    min-height: 48px;
+    padding: 12px 8px;
+    justify-content: center;
+    touch-action: manipulation; /* Disable double-tap-to-zoom on this element */
   }
   
   /* On mobile, the header should go transparent at top of page */
@@ -1372,7 +1384,8 @@ body.shaking {
 @media (max-width: 600px) {
   .plan-grid { grid-template-columns: 1fr; }
   /* Hero slider: zoom out on mobile — use object-position only, no transform shift */
-  .hero-slider { min-height: 55vh; height: 55vh; }
+  /* Use svh so the height doesn't jump when iOS Safari's address bar collapses */
+  .hero-slider { min-height: 55svh; height: 55svh; }
   .hero-slider .slider-slide img {
     object-fit: cover;
     object-position: center 30%;
@@ -1383,6 +1396,11 @@ body.shaking {
   }
   .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
   .footer-right { flex-direction: column; gap: 16px; }
+
+  /* On small screens, scale down header so padding can be smaller */
+  .subpage-main {
+    padding-top: 90px;
+  }
 }
 
 /* =========================================================
